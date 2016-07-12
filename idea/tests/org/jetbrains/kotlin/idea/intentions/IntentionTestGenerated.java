@@ -3713,6 +3713,69 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
         }
     }
 
+    @TestMetadata("idea/testData/intentions/convertLambdaToReference")
+    @TestDataPath("$PROJECT_ROOT")
+    @RunWith(JUnit3RunnerWithInners.class)
+    public static class ConvertLambdaToReference extends AbstractIntentionTest {
+        public void testAllFilesPresentInConvertLambdaToReference() throws Exception {
+            KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("idea/testData/intentions/convertLambdaToReference"), Pattern.compile("^([\\w\\-_]+)\\.kt$"), true);
+        }
+
+        @TestMetadata("constructor.kt")
+        public void testConstructor() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/constructor.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("emptyBrackets.kt")
+        public void testEmptyBrackets() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/emptyBrackets.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("extension.kt")
+        public void testExtension() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/extension.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("generic.kt")
+        public void testGeneric() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/generic.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("member.kt")
+        public void testMember() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/member.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("simple.kt")
+        public void testSimple() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/simple.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("threeParameters.kt")
+        public void testThreeParameters() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/threeParameters.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("wrongParameterNumber.kt")
+        public void testWrongParameterNumber() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/wrongParameterNumber.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("wrongParameterOrder.kt")
+        public void testWrongParameterOrder() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/wrongParameterOrder.kt");
+            doTest(fileName);
+        }
+    }
+
     @TestMetadata("idea/testData/intentions/convertNegatedBooleanSequence")
     @TestDataPath("$PROJECT_ROOT")
     @RunWith(JUnit3RunnerWithInners.class)
