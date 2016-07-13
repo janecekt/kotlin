@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.BindingContext.REFERENCE_TARGET
 import org.jetbrains.kotlin.types.isDynamic
 import org.jetbrains.kotlin.types.isFlexible
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
@@ -39,7 +40,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             context: BindingContext
     ): Boolean {
         val calleeExpression = callExpression.calleeExpression as? KtNameReferenceExpression ?: return false
-        val descriptor = (context[BindingContext.REFERENCE_TARGET, calleeExpression] as? FunctionDescriptor) ?: return false
+        val descriptor = context[REFERENCE_TARGET, calleeExpression] as? FunctionDescriptor ?: return false
         if (descriptor.typeParameters.isNotEmpty()) return false
         val descriptorHasReceiver = descriptor.dispatchReceiverParameter != null || descriptor.extensionReceiverParameter != null
         val callHasReceiver = callReceiver != null
@@ -52,7 +53,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         if (parametersCount != callExpression.valueArguments.size + receiverShift) return false
         if (callReceiver != null) {
             if (callReceiver !is KtNameReferenceExpression) return false
-            val callReceiverDescriptor = (context[BindingContext.REFERENCE_TARGET, callReceiver] as? ParameterDescriptor) ?: return false
+            val callReceiverDescriptor = context[REFERENCE_TARGET, callReceiver] as? ParameterDescriptor ?: return false
             val receiverType = callReceiverDescriptor.type
             if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
                 !receiverType.constructor.isDenotable) return false
@@ -71,14 +72,26 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
     override fun isApplicableTo(element: KtLambdaExpression): Boolean {
         val body = element.bodyExpression ?: return false
         val statement = body.statements.singleOrNull() ?: return false
+        val lambdaParent = element.parent
+        val context: BindingContext
+        if (lambdaParent is LambdaArgument) {
+            val outerCallExpression = lambdaParent.parent as? KtCallExpression ?: return false
+            context = outerCallExpression.analyze()
+            val outerCallee = outerCallExpression.calleeExpression as? KtReferenceExpression ?: return false
+            val outerCalleeDescriptor = context[REFERENCE_TARGET, outerCallee] as? FunctionDescriptor ?: return false
+            if (outerCalleeDescriptor.valueParameters.any { it.declaresDefaultValue() }) return false
+        }
+        else {
+            context = statement.analyze()
+        }
         return when (statement) {
             is KtCallExpression -> {
-                isConvertableCallInLambda(statement, null, element, statement.analyze())
+                isConvertableCallInLambda(statement, null, element, context)
             }
             is KtNameReferenceExpression -> false // Global property reference is not possible (?!)
             is KtDotQualifiedExpression -> {
                 val selector = statement.selectorExpression as? KtCallExpression ?: return false
-                isConvertableCallInLambda(selector, statement.receiverExpression, element, statement.analyze())
+                isConvertableCallInLambda(selector, statement.receiverExpression, element, context)
             }
             else -> false
         }
@@ -94,7 +107,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
                 val selectorReferenceName = (selector as? KtCallExpression)?.let { it.getCallReferencedName() } ?: return null
                 val receiver = expression.receiverExpression as? KtNameReferenceExpression ?: return null
                 val context = receiver.analyze()
-                val receiverDescriptor = (context[BindingContext.REFERENCE_TARGET, receiver] as? ParameterDescriptor) ?: return null
+                val receiverDescriptor = context[REFERENCE_TARGET, receiver] as? ParameterDescriptor ?: return null
                 val receiverType = receiverDescriptor.type
                 "$receiverType::$selectorReferenceName"
             }
