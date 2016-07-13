@@ -3733,6 +3733,12 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("defaultArgument.kt")
+        public void testDefaultArgument() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/defaultArgument.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("emptyBrackets.kt")
         public void testEmptyBrackets() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/emptyBrackets.kt");

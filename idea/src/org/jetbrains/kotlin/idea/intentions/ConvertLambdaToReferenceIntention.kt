@@ -44,6 +44,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         val descriptorHasReceiver = descriptor.dispatchReceiverParameter != null || descriptor.extensionReceiverParameter != null
         val callHasReceiver = callReceiver != null
         if (descriptorHasReceiver != callHasReceiver) return false
+        if (descriptor.valueParameters.size != callExpression.valueArguments.size) return false
 
         val hasSpecification = lambdaExpression.functionLiteral.hasParameterSpecification()
         val receiverShift = if (callHasReceiver) 1 else 0
