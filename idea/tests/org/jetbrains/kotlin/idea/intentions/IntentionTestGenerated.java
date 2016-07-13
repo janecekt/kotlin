@@ -3763,15 +3763,39 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("extensionProperty.kt")
+        public void testExtensionProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/extensionProperty.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("generic.kt")
         public void testGeneric() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/generic.kt");
             doTest(fileName);
         }
 
+        @TestMetadata("globalProperty.kt")
+        public void testGlobalProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/globalProperty.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("globalPropertyNoArgs.kt")
+        public void testGlobalPropertyNoArgs() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/globalPropertyNoArgs.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("member.kt")
         public void testMember() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/member.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("name.kt")
+        public void testName() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/name.kt");
             doTest(fileName);
         }
 

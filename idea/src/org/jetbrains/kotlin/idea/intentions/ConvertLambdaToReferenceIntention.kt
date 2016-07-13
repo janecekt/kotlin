@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.idea.intentions
 
 import com.intellij.openapi.editor.Editor
+import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.ParameterDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
@@ -34,37 +35,44 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         KtLambdaExpression::class.java, "Convert lambda to reference"
 ) {
     private fun isConvertableCallInLambda(
-            callExpression: KtCallExpression,
-            callReceiver: KtExpression?,
+            callableExpression: KtExpression,
+            explicitReceiver: KtExpression? = null,
             lambdaExpression: KtLambdaExpression,
             context: BindingContext
     ): Boolean {
-        val calleeExpression = callExpression.calleeExpression as? KtNameReferenceExpression ?: return false
-        val descriptor = context[REFERENCE_TARGET, calleeExpression] as? FunctionDescriptor ?: return false
-        if (descriptor.typeParameters.isNotEmpty()) return false
-        val descriptorHasReceiver = descriptor.dispatchReceiverParameter != null || descriptor.extensionReceiverParameter != null
-        val callHasReceiver = callReceiver != null
+        val calleeReferenceExpression = when (callableExpression) {
+            is KtCallExpression -> callableExpression.calleeExpression as? KtNameReferenceExpression ?: return false
+            is KtNameReferenceExpression -> callableExpression
+            else -> return false
+        }
+        val calleeDescriptor = context[REFERENCE_TARGET, calleeReferenceExpression] as? CallableMemberDescriptor ?: return false
+        if (calleeDescriptor.typeParameters.isNotEmpty()) return false
+        val descriptorHasReceiver = with (calleeDescriptor) { dispatchReceiverParameter != null || extensionReceiverParameter != null }
+        val callHasReceiver = explicitReceiver != null
         if (descriptorHasReceiver != callHasReceiver) return false
-        if (descriptor.valueParameters.size != callExpression.valueArguments.size) return false
+        val callableArgumentsCount = if (callableExpression is KtCallExpression) callableExpression.valueArguments.size else 0
+        if (calleeDescriptor.valueParameters.size != callableArgumentsCount) return false
 
         val hasSpecification = lambdaExpression.functionLiteral.hasParameterSpecification()
         val receiverShift = if (callHasReceiver) 1 else 0
         val parametersCount = if (hasSpecification) lambdaExpression.valueParameters.size else 1
-        if (parametersCount != callExpression.valueArguments.size + receiverShift) return false
-        if (callReceiver != null) {
-            if (callReceiver !is KtNameReferenceExpression) return false
-            val callReceiverDescriptor = context[REFERENCE_TARGET, callReceiver] as? ParameterDescriptor ?: return false
+        if (parametersCount != callableArgumentsCount + receiverShift) return false
+        if (explicitReceiver != null) {
+            if (explicitReceiver !is KtNameReferenceExpression) return false
+            val callReceiverDescriptor = context[REFERENCE_TARGET, explicitReceiver] as? ParameterDescriptor ?: return false
             val receiverType = callReceiverDescriptor.type
             if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
                 !receiverType.constructor.isDenotable) return false
 
             val parameterName = if (hasSpecification) lambdaExpression.valueParameters[0].name else "it"
-            if (callReceiver.getReferencedName() != parameterName) return false
+            if (explicitReceiver.getReferencedName() != parameterName) return false
         }
-        callExpression.valueArguments.forEachIndexed { i, argument ->
-            val argumentExpression = argument.getArgumentExpression() as? KtNameReferenceExpression ?: return false
-            val parameterName = if (hasSpecification) lambdaExpression.valueParameters[i + receiverShift].name else "it"
-            if (argumentExpression.getReferencedName() != parameterName) return false
+        if (callableExpression is KtCallExpression) {
+            callableExpression.valueArguments.forEachIndexed { i, argument ->
+                val argumentExpression = argument.getArgumentExpression() as? KtNameReferenceExpression ?: return false
+                val parameterName = if (hasSpecification) lambdaExpression.valueParameters[i + receiverShift].name else "it"
+                if (argumentExpression.getReferencedName() != parameterName) return false
+            }
         }
         return true
     }
@@ -86,12 +94,13 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         }
         return when (statement) {
             is KtCallExpression -> {
-                isConvertableCallInLambda(statement, null, element, context)
+                isConvertableCallInLambda(callableExpression = statement, lambdaExpression = element, context = context)
             }
             is KtNameReferenceExpression -> false // Global property reference is not possible (?!)
             is KtDotQualifiedExpression -> {
-                val selector = statement.selectorExpression as? KtCallExpression ?: return false
-                isConvertableCallInLambda(selector, statement.receiverExpression, element, context)
+                val selector = statement.selectorExpression ?: return false
+                isConvertableCallInLambda(callableExpression = selector, explicitReceiver = statement.receiverExpression,
+                                          lambdaExpression = element, context = context)
             }
             else -> false
         }
@@ -104,7 +113,11 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             is KtCallExpression -> "::${expression.getCallReferencedName()}"
             is KtDotQualifiedExpression -> {
                 val selector = expression.selectorExpression
-                val selectorReferenceName = (selector as? KtCallExpression)?.let { it.getCallReferencedName() } ?: return null
+                val selectorReferenceName = when (selector) {
+                    is KtCallExpression -> selector.getCallReferencedName() ?: return null
+                    is KtNameReferenceExpression -> selector.getReferencedName()
+                    else -> return null
+                }
                 val receiver = expression.receiverExpression as? KtNameReferenceExpression ?: return null
                 val context = receiver.analyze()
                 val receiverDescriptor = context[REFERENCE_TARGET, receiver] as? ParameterDescriptor ?: return null
