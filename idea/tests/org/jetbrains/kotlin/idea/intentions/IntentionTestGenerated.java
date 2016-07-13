@@ -3739,6 +3739,12 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("erasedReceiver.kt")
+        public void testErasedReceiver() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/erasedReceiver.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("extension.kt")
         public void testExtension() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/extension.kt");

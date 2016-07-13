@@ -23,6 +23,9 @@ import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.types.isDynamic
+import org.jetbrains.kotlin.types.isFlexible
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 
 class ConvertLambdaToReferenceInspection : IntentionBasedInspection<KtLambdaExpression>(ConvertLambdaToReferenceIntention())
 
@@ -48,6 +51,10 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         if (parametersCount != callExpression.valueArguments.size + receiverShift) return false
         if (callReceiver != null) {
             if (callReceiver !is KtNameReferenceExpression) return false
+            val callReceiverDescriptor = (context[BindingContext.REFERENCE_TARGET, callReceiver] as? ParameterDescriptor) ?: return false
+            val receiverType = callReceiverDescriptor.type
+            if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic()) return false
+
             val parameterName = if (hasSpecification) lambdaExpression.valueParameters[0].name else "it"
             if (callReceiver.getReferencedName() != parameterName) return false
         }
