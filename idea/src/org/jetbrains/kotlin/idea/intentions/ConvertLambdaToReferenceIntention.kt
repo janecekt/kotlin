@@ -54,7 +54,8 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             if (callReceiver !is KtNameReferenceExpression) return false
             val callReceiverDescriptor = (context[BindingContext.REFERENCE_TARGET, callReceiver] as? ParameterDescriptor) ?: return false
             val receiverType = callReceiverDescriptor.type
-            if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic()) return false
+            if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
+                !receiverType.constructor.isDenotable) return false
 
             val parameterName = if (hasSpecification) lambdaExpression.valueParameters[0].name else "it"
             if (callReceiver.getReferencedName() != parameterName) return false
