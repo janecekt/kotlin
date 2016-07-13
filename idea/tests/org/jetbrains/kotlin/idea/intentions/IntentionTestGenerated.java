@@ -3727,6 +3727,12 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("conversion.kt")
+        public void testConversion() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/conversion.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("emptyBrackets.kt")
         public void testEmptyBrackets() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/emptyBrackets.kt");
@@ -3751,6 +3757,18 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("receiverParameter.kt")
+        public void testReceiverParameter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/receiverParameter.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("receiverParameterReversed.kt")
+        public void testReceiverParameterReversed() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/receiverParameterReversed.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("simple.kt")
         public void testSimple() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/simple.kt");
@@ -3760,6 +3778,18 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
         @TestMetadata("threeParameters.kt")
         public void testThreeParameters() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/threeParameters.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("toString.kt")
+        public void testToString() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/toString.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("unwrap.kt")
+        public void testUnwrap() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/unwrap.kt");
             doTest(fileName);
         }
 
