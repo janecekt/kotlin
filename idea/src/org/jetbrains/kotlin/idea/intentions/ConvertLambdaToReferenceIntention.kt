@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingContext.REFERENCE_TARGET
+import org.jetbrains.kotlin.resolve.descriptorUtil.hasDefaultValue
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.isDynamic
 import org.jetbrains.kotlin.types.isFlexible
@@ -92,7 +93,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             context = outerCallExpression.analyze()
             val outerCallee = outerCallExpression.calleeExpression as? KtReferenceExpression ?: return false
             val outerCalleeDescriptor = context[REFERENCE_TARGET, outerCallee] as? FunctionDescriptor ?: return false
-            if (outerCalleeDescriptor.valueParameters.any { it.declaresDefaultValue() }) return false
+            if (outerCalleeDescriptor.valueParameters.any { it.hasDefaultValue() }) return false
         }
         else {
             context = statement.analyze()
