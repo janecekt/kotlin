@@ -47,7 +47,10 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         val calleeDescriptor = context[REFERENCE_TARGET, calleeReferenceExpression] as? CallableMemberDescriptor ?: return false
         if (calleeDescriptor.typeParameters.isNotEmpty()) return false
         if (calleeDescriptor is SyntheticJavaPropertyDescriptor) return false
-        val descriptorHasReceiver = with (calleeDescriptor) { dispatchReceiverParameter != null || extensionReceiverParameter != null }
+        val descriptorHasReceiver = with (calleeDescriptor) {
+            if (dispatchReceiverParameter != null && extensionReceiverParameter != null) return false
+            dispatchReceiverParameter != null || extensionReceiverParameter != null
+        }
         val callHasReceiver = explicitReceiver != null
         if (descriptorHasReceiver != callHasReceiver) return false
         val callableArgumentsCount = if (callableExpression is KtCallExpression) callableExpression.valueArguments.size else 0
