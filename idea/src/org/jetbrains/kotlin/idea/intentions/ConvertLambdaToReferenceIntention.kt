@@ -17,8 +17,11 @@
 package org.jetbrains.kotlin.idea.intentions
 
 import com.intellij.openapi.editor.Editor
+import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
+import org.jetbrains.kotlin.idea.caches.resolve.getResolutionFacade
+import org.jetbrains.kotlin.idea.core.isVisible
 import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
@@ -66,9 +69,14 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             val callReceiverDescriptor = context[REFERENCE_TARGET, explicitReceiver] as? ParameterDescriptor ?: return false
             val receiverType = callReceiverDescriptor.type
             if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
-                !receiverType.constructor.isDenotable) return false
+                !receiverType.constructor.isDenotable || receiverType.isFunctionType) return false
             val receiverDeclarationDescriptor = receiverType.constructor.declarationDescriptor
-            if (receiverDeclarationDescriptor is ClassDescriptor && receiverDeclarationDescriptor.kind == ClassKind.OBJECT) return false
+            if (receiverDeclarationDescriptor is ClassDescriptor) {
+                if (receiverDeclarationDescriptor.kind == ClassKind.OBJECT) return false
+                if (!receiverDeclarationDescriptor.isVisible(
+                        explicitReceiver, null, context, explicitReceiver.getResolutionFacade()
+                )) return false
+            }
 
             val parameterName = if (hasSpecification) lambdaExpression.valueParameters[0].name else "it"
             if (explicitReceiver.getReferencedName() != parameterName) return false
