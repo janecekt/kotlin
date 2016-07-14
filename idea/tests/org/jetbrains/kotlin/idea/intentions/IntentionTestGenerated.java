@@ -3865,6 +3865,12 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("unit.kt")
+        public void testUnit() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/unit.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("unwrap.kt")
         public void testUnwrap() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/unwrap.kt");

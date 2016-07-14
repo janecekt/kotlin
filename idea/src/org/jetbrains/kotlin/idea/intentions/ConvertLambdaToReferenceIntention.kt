@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.idea.intentions
 
 import com.intellij.openapi.editor.Editor
+import org.jetbrains.kotlin.builtins.getReturnTypeFromFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
@@ -30,6 +31,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.hasDefaultValue
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.isDynamic
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
+import org.jetbrains.kotlin.types.typeUtil.isUnit
 
 class ConvertLambdaToReferenceInspection : IntentionBasedInspection<KtLambdaExpression>(ConvertLambdaToReferenceIntention())
 
@@ -40,6 +42,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             callableExpression: KtExpression,
             explicitReceiver: KtExpression? = null,
             lambdaExpression: KtLambdaExpression,
+            lambdaMustReturnUnit: Boolean,
             context: BindingContext
     ): Boolean {
         val calleeReferenceExpression = when (callableExpression) {
@@ -58,6 +61,11 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         if (descriptorHasReceiver != callHasReceiver) return false
         val callableArgumentsCount = if (callableExpression is KtCallExpression) callableExpression.valueArguments.size else 0
         if (calleeDescriptor.valueParameters.size != callableArgumentsCount) return false
+        if (lambdaMustReturnUnit) {
+            calleeDescriptor.returnType.let {
+                if (it == null || !it.isUnit()) return false
+            }
+        }
 
         val hasSpecification = lambdaExpression.functionLiteral.hasParameterSpecification()
         val receiverShift = if (callHasReceiver) 1 else 0
@@ -95,25 +103,31 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         val statement = body.statements.singleOrNull() ?: return false
         val lambdaParent = element.parent
         val context: BindingContext
+        var lambdaMustReturnUnit = false
         if (lambdaParent is LambdaArgument) {
             val outerCallExpression = lambdaParent.parent as? KtCallExpression ?: return false
             context = outerCallExpression.analyze()
             val outerCallee = outerCallExpression.calleeExpression as? KtReferenceExpression ?: return false
             val outerCalleeDescriptor = context[REFERENCE_TARGET, outerCallee] as? FunctionDescriptor ?: return false
             if (outerCalleeDescriptor.valueParameters.any { it.hasDefaultValue() }) return false
+            val lambdaParameterType = outerCalleeDescriptor.valueParameters.lastOrNull()?.type
+            if (lambdaParameterType != null && lambdaParameterType.isFunctionType) {
+                lambdaMustReturnUnit = getReturnTypeFromFunctionType(lambdaParameterType).isUnit()
+            }
         }
         else {
             context = statement.analyze()
         }
         return when (statement) {
             is KtCallExpression -> {
-                isConvertableCallInLambda(callableExpression = statement, lambdaExpression = element, context = context)
+                isConvertableCallInLambda(callableExpression = statement, lambdaExpression = element,
+                                          lambdaMustReturnUnit = lambdaMustReturnUnit, context = context)
             }
             is KtNameReferenceExpression -> false // Global property reference is not possible (?!)
             is KtDotQualifiedExpression -> {
                 val selector = statement.selectorExpression ?: return false
                 isConvertableCallInLambda(callableExpression = selector, explicitReceiver = statement.receiverExpression,
-                                          lambdaExpression = element, context = context)
+                                          lambdaExpression = element, lambdaMustReturnUnit = lambdaMustReturnUnit, context = context)
             }
             else -> false
         }
