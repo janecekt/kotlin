@@ -118,7 +118,7 @@ class CompositeAnnotations(
 ) : Annotations {
     constructor(vararg delegates: Annotations): this(delegates.toList())
 
-    override fun isEmpty() = delegates.all { it.isEmpty() }
+    override fun isEmpty() = delegates.all(Annotations::isEmpty)
 
     override fun hasAnnotation(fqName: FqName) = delegates.asSequence().any { it.hasAnnotation(fqName) }
 
@@ -126,9 +126,9 @@ class CompositeAnnotations(
 
     override fun findExternalAnnotation(fqName: FqName) = delegates.asSequence().mapNotNull { it.findExternalAnnotation(fqName) }.firstOrNull()
 
-    override fun getUseSiteTargetedAnnotations() = delegates.flatMap { it.getUseSiteTargetedAnnotations() }
+    override fun getUseSiteTargetedAnnotations() = delegates.flatMap(Annotations::getUseSiteTargetedAnnotations)
 
-    override fun getAllAnnotations() = delegates.flatMap { it.getAllAnnotations() }
+    override fun getAllAnnotations() = delegates.flatMap(Annotations::getAllAnnotations)
 
     override fun iterator() = delegates.asSequence().flatMap { it.asSequence() }.iterator()
 }

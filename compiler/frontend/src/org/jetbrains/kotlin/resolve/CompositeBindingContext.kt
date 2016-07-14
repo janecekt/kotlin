@@ -77,7 +77,7 @@ class CompositeBindingContext private constructor(
         }
 
         override fun all(): Collection<Diagnostic> {
-            return delegates.flatMap { it.all() }
+            return delegates.flatMap(Diagnostics::all)
         }
 
         override fun forElement(psiElement: PsiElement): Collection<Diagnostic> {
@@ -85,11 +85,11 @@ class CompositeBindingContext private constructor(
         }
 
         override fun isEmpty(): Boolean {
-            return delegates.all { it.isEmpty() }
+            return delegates.all(Diagnostics::isEmpty)
         }
 
         override fun noSuppression(): Diagnostics {
-            return CompositeDiagnostics(delegates.map { it.noSuppression() })
+            return CompositeDiagnostics(delegates.map(Diagnostics::noSuppression))
         }
     }
 }

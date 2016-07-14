@@ -111,7 +111,7 @@ open class KotlinPsiChecker : Annotator, HighlightRangeExtension {
 }
 
 private fun createQuickFixes(similarDiagnostics: Collection<Diagnostic>): MultiMap<Diagnostic, IntentionAction> {
-    val first = similarDiagnostics.minBy { it.toString() }
+    val first = similarDiagnostics.minBy(Diagnostic::toString)
     val factory = similarDiagnostics.first().factory
 
     val actions = MultiMap<Diagnostic, IntentionAction>()
@@ -192,7 +192,7 @@ private class ElementAnnotator(private val element: PsiElement,
     private fun registerDiagnosticAnnotations(diagnostics: List<Diagnostic>) {
         assert(diagnostics.isNotEmpty())
 
-        val validDiagnostics = diagnostics.filter { it.isValid }
+        val validDiagnostics = diagnostics.filter(Diagnostic::isValid)
         if (validDiagnostics.isEmpty()) return
 
         val diagnostic = diagnostics.first()

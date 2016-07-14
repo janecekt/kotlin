@@ -95,7 +95,7 @@ private val SUBCLASSED_CLASS = MarkerType(
         })
 
 private val OVERRIDDEN_FUNCTION = MarkerType(
-        { getPsiMethod(it)?.let { getOverriddenMethodTooltip(it) } },
+        { getPsiMethod(it)?.let(::getOverriddenMethodTooltip) },
         object : LineMarkerNavigator() {
             override fun browse(e: MouseEvent?, element: PsiElement?) {
                 getPsiMethod(element)?.let { navigateToOverriddenMethod(e, it) }

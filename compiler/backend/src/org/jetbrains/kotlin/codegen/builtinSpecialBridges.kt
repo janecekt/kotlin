@@ -156,7 +156,7 @@ private fun <Signature> findSuperImplementationForStubDelegation(
 }
 
 private fun findAllReachableDeclarations(functionDescriptor: FunctionDescriptor): MutableSet<FunctionDescriptor> =
-        findAllReachableDeclarations(DescriptorBasedFunctionHandle(functionDescriptor)).map { it.descriptor }.toMutableSet()
+        findAllReachableDeclarations(DescriptorBasedFunctionHandle(functionDescriptor)).map(DescriptorBasedFunctionHandle::descriptor).toMutableSet()
 
 private fun <Signature> CallableMemberDescriptor.getSpecialBridgeSignatureIfExists(
         signatureByDescriptor: (FunctionDescriptor) -> Signature

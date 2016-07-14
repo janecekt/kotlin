@@ -57,5 +57,5 @@ class LabelNameRefreshingVisitor(val functionScope: JsFunctionScope) : JsVisitor
         super.endVisit(x, ctx)
     }
 
-    private fun getSubstitution(name: JsName) = substitutions[name]?.let { it.peek() } ?: name
+    private fun getSubstitution(name: JsName) = substitutions[name]?.let(ArrayDeque<JsName>::peek) ?: name
 }

@@ -64,7 +64,7 @@ object KotlinJavascriptSerializationUtil {
 
     @JvmStatic private fun createPackageFragmentProvider(moduleDescriptor: ModuleDescriptor, contentMap: Map<String, ByteArray>,
                                                          storageManager: StorageManager): PackageFragmentProvider? {
-        val packageFqNames = getPackages(contentMap).map { FqName(it) }.toSet()
+        val packageFqNames = getPackages(contentMap).map(::FqName).toSet()
         if (packageFqNames.isEmpty()) return null
 
         return createKotlinJavascriptPackageFragmentProvider(storageManager, moduleDescriptor, packageFqNames) {
@@ -226,7 +226,7 @@ object KotlinJavascriptSerializationUtil {
             }
         }
 
-        keys.forEach { addNames(it) }
+        keys.forEach(::addNames)
 
         return result.map { it.substringAfter('/').replace('/', '.') }.toSet()
     }

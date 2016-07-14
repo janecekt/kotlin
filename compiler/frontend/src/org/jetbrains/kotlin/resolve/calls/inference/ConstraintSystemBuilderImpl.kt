@@ -102,7 +102,7 @@ class ConstraintSystemBuilderImpl(private val mode: Mode = ConstraintSystemBuild
         }
 
         return storeSubstitutor(call, TypeSubstitutor.create(TypeConstructorSubstitution.createByParametersMap(
-                typeParameters.zip(typeVariables.map { it.type }.defaultProjections()).toMap()
+                typeParameters.zip(typeVariables.map(TypeVariable::type).defaultProjections()).toMap()
         )))
     }
 
@@ -398,7 +398,7 @@ class ConstraintSystemBuilderImpl(private val mode: Mode = ConstraintSystemBuild
 
     override fun fixVariables() {
         // todo variables should be fixed in the right order
-        val (external, functionTypeParameters) = allTypeParameterBounds.keys.partition { it.isExternal }
+        val (external, functionTypeParameters) = allTypeParameterBounds.keys.partition(TypeVariable::isExternal)
         external.forEach { fixVariable(it) }
         functionTypeParameters.forEach { fixVariable(it) }
     }

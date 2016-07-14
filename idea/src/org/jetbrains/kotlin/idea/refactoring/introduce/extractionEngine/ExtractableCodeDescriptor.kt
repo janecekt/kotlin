@@ -181,7 +181,7 @@ interface OutputValue {
 }
 
 abstract class OutputValueBoxer(val outputValues: List<OutputValue>) {
-    val outputValueTypes: List<KotlinType> get() = outputValues.map { it.valueType }
+    val outputValueTypes: List<KotlinType> get() = outputValues.map(OutputValue::valueType)
 
     abstract val returnType: KotlinType
 
@@ -279,7 +279,7 @@ abstract class OutputValueBoxer(val outputValues: List<OutputValue>) {
             val builtIns = outputValues.first().valueType.builtIns
             TypeUtils.substituteParameters(
                     builtIns.list,
-                    Collections.singletonList(CommonSupertypes.commonSupertype(outputValues.map { it.valueType }))
+                    Collections.singletonList(CommonSupertypes.commonSupertype(outputValues.map(OutputValue::valueType)))
             )
         }
 

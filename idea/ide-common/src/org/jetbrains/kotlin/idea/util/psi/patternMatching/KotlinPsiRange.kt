@@ -51,7 +51,7 @@ interface KotlinPsiRange {
 
     fun getTextRange(): TextRange
 
-    fun isValid(): Boolean = elements.all { it.isValid }
+    fun isValid(): Boolean = elements.all(PsiElement::isValid)
 
     val empty: Boolean get() = this is Empty
 

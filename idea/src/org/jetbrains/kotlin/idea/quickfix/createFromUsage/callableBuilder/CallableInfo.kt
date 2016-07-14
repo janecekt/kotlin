@@ -107,7 +107,7 @@ fun TypeInfo.noSubstitutions(): TypeInfo = (this as? TypeInfo.NoSubstitutions) ?
 fun TypeInfo.forceNotNull(): TypeInfo {
     class ForcedNotNull(delegate: TypeInfo): TypeInfo.DelegatingTypeInfo(delegate) {
         override fun getPossibleTypes(builder: CallableBuilder): List<KotlinType> =
-                super.getPossibleTypes(builder).map { it.makeNotNullable() }
+                super.getPossibleTypes(builder).map(KotlinType::makeNotNullable)
     }
 
     return (this as? ForcedNotNull) ?: ForcedNotNull(this)

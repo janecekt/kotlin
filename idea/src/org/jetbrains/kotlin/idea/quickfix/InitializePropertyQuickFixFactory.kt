@@ -203,7 +203,7 @@ object InitializePropertyQuickFixFactory : KotlinIntentionActionsFactory() {
     }
 
     private fun noUsagesExist(affectedFunctions: Collection<PsiElement>): Boolean {
-        return affectedFunctions.flatMap { it.toLightMethods() }.all { MethodReferencesSearch.search(it).findFirst() == null }
+        return affectedFunctions.flatMap(PsiElement::toLightMethods).all { MethodReferencesSearch.search(it).findFirst() == null }
     }
 
     override fun doCreateActions(diagnostic: Diagnostic): List<IntentionAction> {

@@ -35,6 +35,7 @@ import org.jetbrains.kotlin.kdoc.parser.KDocKnownTag
 import org.jetbrains.kotlin.kdoc.psi.api.KDoc
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocLink
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocName
+import org.jetbrains.kotlin.kdoc.psi.impl.KDocTag
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtNamedFunction
@@ -91,7 +92,7 @@ class KDocNameCompletionSession(
     private fun addParamCompletions(position: KDocName,
                                     declarationDescriptor: DeclarationDescriptor) {
         val section = position.getContainingSection()
-        val documentedParameters = section.findTagsByName("param").map { it.getSubjectName() }.toSet()
+        val documentedParameters = section.findTagsByName("param").map(KDocTag::getSubjectName).toSet()
         val descriptors = getParamDescriptors(declarationDescriptor)
                 .filter { it.name.asString() !in documentedParameters }
 

@@ -618,8 +618,8 @@ private class ConstantExpressionEvaluatorVisitor(
 
             return factory.createArrayValue(arguments.map { it.toConstantValue(varargType) }, resultingDescriptor.returnType!!).
                     wrap(
-                            usesVariableAsConstant = arguments.any { it.usesVariableAsConstant },
-                            usesNonConstValAsConstant = arguments.any { it.usesNonConstValAsConstant }
+                            usesVariableAsConstant = arguments.any(CompileTimeConstant<*>::usesVariableAsConstant),
+                            usesNonConstValAsConstant = arguments.any(CompileTimeConstant<*>::usesNonConstValAsConstant)
                     )
         }
 

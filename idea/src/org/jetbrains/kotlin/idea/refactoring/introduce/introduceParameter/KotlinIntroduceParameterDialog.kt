@@ -306,7 +306,7 @@ class KotlinIntroduceParameterDialog private constructor(
                                         Collections.singletonList(originalOccurrence)
                                     }
                                 },
-                                parametersToRemove = removeParamsCheckBoxes.filter { it.key.isEnabled && it.key.isSelected }.map { it.value },
+                                parametersToRemove = removeParamsCheckBoxes.filter { it.key.isEnabled && it.key.isSelected }.map(Map.Entry<JCheckBox, KtElement>::value),
                                 occurrenceReplacer = newReplacer
                         )
 

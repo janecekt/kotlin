@@ -94,7 +94,7 @@ fun KotlinType.canBeReferencedViaImport(): Boolean {
 fun KtReferenceExpression.getImportableTargets(bindingContext: BindingContext): Collection<DeclarationDescriptor> {
     val targets = bindingContext[BindingContext.SHORT_REFERENCE_TO_COMPANION_OBJECT, this]?.let { listOf(it) }
                   ?: getReferenceTargets(bindingContext)
-    return targets.map { it.getImportableDescriptor() }.toSet()
+    return targets.map(DeclarationDescriptor::getImportableDescriptor).toSet()
 }
 
 fun prepareOptimizedImports(
@@ -164,7 +164,7 @@ fun prepareOptimizedImports(
     // now check that there are no conflicts and all classes are really imported
     val fileWithImportsText = buildString {
         append("package ").append(file.packageFqName.toUnsafe().render()).append("\n")
-        importsToGenerate.filter { it.isAllUnder }.map { "import " + it.pathStr }.joinTo(this, "\n")
+        importsToGenerate.filter(ImportPath::isAllUnder).map { "import " + it.pathStr }.joinTo(this, "\n")
     }
     val fileWithImports = KtPsiFactory(file).createAnalyzableFile("Dummy.kt", fileWithImportsText, file)
     val scope = fileWithImports.getResolutionFacade().getFileResolutionScope(fileWithImports)

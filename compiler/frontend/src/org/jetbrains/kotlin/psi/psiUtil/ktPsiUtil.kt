@@ -303,7 +303,7 @@ inline fun <reified T : KtElement, R> flatMapDescendantsOfTypeVisitor(accumulato
 
 fun KtClassOrObject.effectiveDeclarations(): List<KtDeclaration> {
     return when(this) {
-        is KtClass -> getDeclarations() + getPrimaryConstructorParameters().filter { p -> p.hasValOrVar() }
+        is KtClass -> getDeclarations() + getPrimaryConstructorParameters().filter(KtParameter::hasValOrVar)
         else -> getDeclarations()
     }
 }

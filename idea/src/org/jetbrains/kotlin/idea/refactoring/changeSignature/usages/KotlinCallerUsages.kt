@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.idea.refactoring.changeSignature.usages
 import com.intellij.usageView.UsageInfo
 import org.jetbrains.kotlin.idea.codeInsight.shorten.addToShorteningWaitSet
 import org.jetbrains.kotlin.idea.refactoring.changeSignature.KotlinChangeInfo
+import org.jetbrains.kotlin.idea.refactoring.changeSignature.KotlinParameterInfo
 import org.jetbrains.kotlin.idea.refactoring.changeSignature.getAffectedCallables
 import org.jetbrains.kotlin.idea.refactoring.changeSignature.isInsideOfCallerBody
 import org.jetbrains.kotlin.name.Name
@@ -55,7 +56,7 @@ class KotlinCallerCallUsage(element: KtCallElement): KotlinUsageInfo<KtCallEleme
         val psiFactory = KtPsiFactory(project)
         val isNamedCall = argumentList.arguments.any { it.getArgumentName() != null }
         changeInfo.getNonReceiverParameters()
-                .filter { it.isNewParameter }
+                .filter(KotlinParameterInfo::isNewParameter)
                 .forEach {
                     val parameterName = it.name
                     val argumentExpression = if (element.isInsideOfCallerBody(allUsages)) {

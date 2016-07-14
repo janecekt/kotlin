@@ -76,7 +76,7 @@ private fun insertSaveRestoreStackMarkers(
             if (!doneTryStartLabels.contains(tryStartLabel)) {
                 doneTryStartLabels.add(tryStartLabel)
 
-                val nopNode = tryStartLabel.findNextOrNull { it.hasOpcode() }!!
+                val nopNode = tryStartLabel.findNextOrNull(AbstractInsnNode::hasOpcode)!!
                 assert(nopNode.getOpcode() == Opcodes.NOP) { "${methodNode.instructions.indexOf(nopNode)}: try block should start with NOP" }
 
                 val newTryStartLabel = LabelNode(Label())
@@ -91,7 +91,7 @@ private fun insertSaveRestoreStackMarkers(
                 if (!doneHandlerLabels.contains(handlerStartLabel)) {
                     doneHandlerLabels.add(handlerStartLabel)
 
-                    val storeNode = handlerStartLabel.findNextOrNull { it.hasOpcode() }!!
+                    val storeNode = handlerStartLabel.findNextOrNull(AbstractInsnNode::hasOpcode)!!
                     assert(storeNode.getOpcode() == Opcodes.ASTORE) { "${methodNode.instructions.indexOf(storeNode)}: handler should start with ASTORE" }
 
                     methodNode.instructions.insert(storeNode, PseudoInsn.RESTORE_STACK_IN_TRY_CATCH.createInsnNode())

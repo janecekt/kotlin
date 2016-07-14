@@ -91,7 +91,7 @@ data class ExtractionData(
 ) : Disposable {
     val project: Project = originalFile.project
     val originalElements: List<PsiElement> = originalRange.elements
-    val physicalElements = originalElements.map { it.substringContextOrThis }
+    val physicalElements = originalElements.map(PsiElement::substringContextOrThis)
 
     val substringInfo: ExtractableSubstringInfo?
         get() = (originalElements.singleOrNull() as? KtExpression)?.extractableSubstringInfo
@@ -259,7 +259,7 @@ data class ExtractionData(
     }
 
     override fun dispose() {
-        expressions.forEach { unmarkReferencesInside(it) }
+        expressions.forEach(::unmarkReferencesInside)
     }
 }
 

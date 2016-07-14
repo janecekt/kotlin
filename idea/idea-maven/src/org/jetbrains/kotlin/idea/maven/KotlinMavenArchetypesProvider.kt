@@ -63,7 +63,7 @@ class KotlinMavenArchetypesProvider(val kotlinPluginVersion: String) : MavenArch
             .filter { it.version?.startsWith(versionPrefix) ?: false }
             .groupBy { it.groupId + ":" + it.artifactId }
             .mapValues { chooseVersion(it.value) }
-            .mapNotNull { it.value }
+            .mapNotNull(Map.Entry<String, MavenArchetype?>::value)
 
     private fun chooseVersion(versions: List<MavenArchetype>): MavenArchetype? {
         return versions.maxBy { MavenVersionComparable(it.version) }

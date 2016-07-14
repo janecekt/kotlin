@@ -55,22 +55,22 @@ class CommentSaver(originalElements: PsiChildRange, private val saveLineBreaks: 
         var lastChild: TreeElement? = null
 
         val children: Sequence<TreeElement>
-            get() = generateSequence({ firstChild }, { it.next })
+            get() = generateSequence({ firstChild }, TreeElement::next)
 
         val reverseChildren: Sequence<TreeElement>
-            get() = generateSequence({ lastChild }, { it.prev })
+            get() = generateSequence({ lastChild }, TreeElement::prev)
 
         val prevSiblings: Sequence<TreeElement>
-            get() = generateSequence({ prev }, { it.prev })
+            get() = generateSequence({ prev }, TreeElement::prev)
 
         val nextSiblings: Sequence<TreeElement>
-            get() = generateSequence({ next }, { it.next })
+            get() = generateSequence({ next }, TreeElement::next)
 
         val parents: Sequence<TreeElement>
-            get() = generateSequence({ parent }, { it.parent })
+            get() = generateSequence({ parent }, TreeElement::parent)
 
         val parentsWithSelf: Sequence<TreeElement>
-            get() = generateSequence(this, { it.parent })
+            get() = generateSequence(this, TreeElement::parent)
 
         val firstLeafInside: TreeElement
             get() {
@@ -101,10 +101,10 @@ class CommentSaver(originalElements: PsiChildRange, private val saveLineBreaks: 
             }
 
         val prevLeafs: Sequence<TreeElement>
-            get() = generateSequence({ prevLeaf }, { it.prevLeaf })
+            get() = generateSequence({ prevLeaf }, TreeElement::prevLeaf)
 
         val nextLeafs: Sequence<TreeElement>
-            get() = generateSequence({ nextLeaf }, { it.nextLeaf })
+            get() = generateSequence({ nextLeaf }, TreeElement::nextLeaf)
 
         fun withDescendants(leftToRight: Boolean): Sequence<TreeElement> {
             val children = if (leftToRight) children else reverseChildren

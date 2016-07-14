@@ -324,7 +324,7 @@ class MultifileClassCodegen(
 
     private fun writeKotlinMultifileFacadeAnnotationIfNeeded() {
         if (!state.classBuilderMode.shouldGenerateMetadata()) return
-        if (files.any { it.isScript }) return
+        if (files.any(KtFile::isScript)) return
 
         writeKotlinMetadata(classBuilder, KotlinClassHeader.Kind.MULTIFILE_CLASS) { av ->
             val arv = av.visitArray(JvmAnnotationNames.METADATA_DATA_FIELD_NAME)

@@ -104,7 +104,7 @@ class KotlinExceptionFilter(private val searchScope: GlobalSearchScope) : Filter
     }
 
     private fun findClassFileByPath(packageName: String, className: String, outputDir: VirtualFile): File? {
-        val outDirFile = File(outputDir.path).check { it.exists() } ?: return null
+        val outDirFile = File(outputDir.path).check(File::exists) ?: return null
 
         val parentDirectory = File(outDirFile, packageName.replace(".", File.separator))
         if (!parentDirectory.exists()) return null
@@ -161,7 +161,7 @@ class KotlinExceptionFilter(private val searchScope: GlobalSearchScope) : Filter
                 debugInfo = debug
             }
         }, ClassReader.SKIP_FRAMES and ClassReader.SKIP_CODE)
-        return debugInfo?.let { SmapData(it) }
+        return debugInfo?.let(::SmapData)
     }
 
     private class SmapData(debugInfo: String) {
@@ -171,7 +171,7 @@ class KotlinExceptionFilter(private val searchScope: GlobalSearchScope) : Filter
             private set
 
         init {
-            val intervals = debugInfo.split(SMAP.END).filter { it.isNotBlank() }
+            val intervals = debugInfo.split(SMAP.END).filter(String::isNotBlank)
             when(intervals.count()) {
                 1 -> {
                     kotlin1 = intervals[0] + SMAP.END

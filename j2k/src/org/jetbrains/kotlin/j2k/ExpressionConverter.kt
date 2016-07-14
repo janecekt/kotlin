@@ -771,7 +771,7 @@ class DefaultExpressionConverter : JavaElementVisitor(), ExpressionConverter {
 
         val specialMethod = method?.let { SpecialMethod.match(it, callParams.size, converter.services) }
         val statement: Statement = if (expression.isConstructor) {
-            MethodCallExpression.build(null, convertMethodReferenceQualifier(qualifier), callParams.map { it.first }, emptyList(), false)
+            MethodCallExpression.build(null, convertMethodReferenceQualifier(qualifier), callParams.map(Pair<Identifier, Type?>::first), emptyList(), false)
         }
         else if (specialMethod != null) {
             val factory = PsiElementFactory.SERVICE.getInstance(converter.project)
@@ -799,7 +799,7 @@ class DefaultExpressionConverter : JavaElementVisitor(), ExpressionConverter {
         }
         else {
             val referenceName = expression.referenceName!!
-            MethodCallExpression.build(receiver?.first, referenceName, callParams.map { it.first }, emptyList(), false)
+            MethodCallExpression.build(receiver?.first, referenceName, callParams.map(Pair<Identifier, Type?>::first), emptyList(), false)
         }
 
         statement.assignNoPrototype()

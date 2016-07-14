@@ -168,14 +168,14 @@ class CallableBuilder(val config: CallableBuilderConfiguration) {
                 override fun hashCode() = 0 // no good way to compute hashCode() that would agree with our equals()
             }
 
-            val newTypes = LinkedHashSet(types.map { EqWrapper(it) })
+            val newTypes = LinkedHashSet(types.map(::EqWrapper))
             for (substitution in substitutions) {
                 // each substitution can be applied or not, so we offer all options
                 val toAdd = newTypes.map { it._type.substitute(substitution, typeInfo.variance) }
                 // substitution.byType are type arguments, but they cannot already occur in the type before substitution
                 val toRemove = newTypes.filter { substitution.byType in it._type }
 
-                newTypes.addAll(toAdd.map { EqWrapper(it) })
+                newTypes.addAll(toAdd.map(::EqWrapper))
                 newTypes.removeAll(toRemove)
             }
 

@@ -70,7 +70,7 @@ class DeprecatedSymbolUsageInWholeProjectFix(
                             val searchScope = KotlinSourceFilterScope.sources(GlobalSearchScope.projectScope(project), project)
                             ReferencesSearch.search(psiElement, searchScope)
                                     .filterIsInstance<KtSimpleNameReference>()
-                                    .map { ref -> ref.expression }
+                                    .map(KtSimpleNameReference::expression)
                         }
                         replaceUsages(project, usages, replacementStrategy)
                     }
@@ -113,7 +113,7 @@ class DeprecatedSymbolUsageInWholeProjectFix(
                     }
                 }
 
-                importsToDelete.forEach { it.delete() }
+                importsToDelete.forEach(KtImportDirective::delete)
             }
         }
     }

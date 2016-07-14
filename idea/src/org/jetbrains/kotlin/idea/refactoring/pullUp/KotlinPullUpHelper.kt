@@ -585,7 +585,7 @@ class KotlinPullUpHelper(
                     val body = constructorElement.getConstructorBodyBlock()
                     body?.addAfter(it, body.statements.lastOrNull() ?: body.lBrace!!)
                 }
-                info.elementsToRemove.forEach { it.delete() }
+                info.elementsToRemove.forEach(KtElement::delete)
             }
         }
     }

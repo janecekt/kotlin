@@ -57,8 +57,8 @@ open class ClassMemberIndex(val jClass: JavaClass, val memberFilter: (JavaMember
         memberFilter(m) && !DescriptorResolverUtils.isObjectMethodInInterface(m)
     }
 
-    private val methods = jClass.methods.asSequence().filter(methodFilter).groupBy { m -> m.name }
-    private val fields = jClass.fields.asSequence().filter(memberFilter).associateBy { m -> m.name }
+    private val methods = jClass.methods.asSequence().filter(methodFilter).groupBy(JavaMethod::name)
+    private val fields = jClass.fields.asSequence().filter(memberFilter).associateBy(JavaField::name)
 
     override fun findMethodsByName(name: Name): Collection<JavaMethod> = methods[name] ?: listOf()
     override fun getMethodNames(nameFilter: (Name) -> Boolean): Collection<Name> =

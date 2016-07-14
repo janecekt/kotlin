@@ -227,7 +227,7 @@ private fun lowerBound(first: EffectiveVisibility, second: EffectiveVisibility) 
         first.lowerBound(second)
 
 private fun lowerBound(first: EffectiveVisibility, args: List<EffectiveVisibility>) =
-        args.fold(first, { x, y -> x.lowerBound(y) })
+        args.fold(first, EffectiveVisibility::lowerBound)
 
 private fun lowerBound(args: List<EffectiveVisibility>) =
         if (args.isEmpty()) Public else lowerBound(args.first(), args.subList(1, args.size))

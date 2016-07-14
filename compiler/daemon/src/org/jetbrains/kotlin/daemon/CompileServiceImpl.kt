@@ -149,7 +149,7 @@ class CompileServiceImpl(
 
     override fun getClients(): CompileService.CallResult<List<String>> = ifAlive {
         synchronized(state.clientProxies) {
-            state.clientProxies.mapNotNull { it.aliveFlagPath }
+            state.clientProxies.mapNotNull(ClientOrSessionProxy::aliveFlagPath)
         }
     }
 
@@ -348,7 +348,7 @@ class CompileServiceImpl(
                 if (fattestOpts memorywiseFitsInto daemonJVMOptions && !(daemonJVMOptions memorywiseFitsInto fattestOpts)) {
                     // all others are smaller that me, take overs' clients and shut them down
                     aliveWithOpts.forEach {
-                        it.first.getClients().check { it.isGood }?.let {
+                        it.first.getClients().check(CompileService.CallResult<List<String>>::isGood)?.let {
                             it.get().forEach { registerClient(it) }
                         }
                         it.first.scheduleShutdown(true)
@@ -358,7 +358,7 @@ class CompileServiceImpl(
                     // there is at least one bigger, handover my clients to it and shutdown
                     scheduleShutdown(true)
                     aliveWithOpts.first().first.let { fattest ->
-                        getClients().check { it.isGood }?.let {
+                        getClients().check(CompileService.CallResult<List<String>>::isGood)?.let {
                             it.get().forEach { fattest.registerClient(it) }
                         }
                     }

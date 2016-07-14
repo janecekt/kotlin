@@ -80,7 +80,7 @@ class LookupElementsCollector(
         var lookupElements = lookupElementFactory.createStandardLookupElementsForDescriptor(descriptor, useReceiverTypes = true)
 
         if (withReceiverCast) {
-            lookupElements = lookupElements.map { it.withReceiverCast() }
+            lookupElements = lookupElements.map(LookupElement::withReceiverCast)
         }
 
         addElements(lookupElements, notImported)

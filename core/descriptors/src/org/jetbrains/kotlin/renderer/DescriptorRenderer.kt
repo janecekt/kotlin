@@ -248,7 +248,7 @@ enum class DescriptorRendererModifier(val includeByDefault: Boolean) {
 
     companion object {
         @JvmField
-        val DEFAULTS = DescriptorRendererModifier.values().filter { it.includeByDefault }.toSet()
+        val DEFAULTS = DescriptorRendererModifier.values().filter(DescriptorRendererModifier::includeByDefault).toSet()
 
         @JvmField
         val ALL = DescriptorRendererModifier.values().toSet()

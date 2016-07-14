@@ -123,7 +123,7 @@ fun getParametersToRemove(
 ): List<KtElement> {
     if (withDefaultValue) return Collections.emptyList()
 
-    val occurrenceRanges = occurrencesToReplace.map { it.getTextRange() }
+    val occurrenceRanges = occurrencesToReplace.map(KotlinPsiRange::getTextRange)
     return parametersUsages.entrySet()
             .filter {
                 it.value.all { paramUsage ->
@@ -268,7 +268,7 @@ open class KotlinIntroduceParameterHandler(
 
         val forbiddenRanges =
                 if (targetParent is KtClass) {
-                    targetParent.declarations.filter { isObjectOrNonInnerClass(it) }.map { it.textRange }
+                    targetParent.declarations.filter(::isObjectOrNonInnerClass).map { it.textRange }
                 }
                 else {
                     Collections.emptyList()

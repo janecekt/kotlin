@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.idea.search.ideaExtensions
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch
 import com.intellij.util.Processor
@@ -39,7 +40,7 @@ open class KotlinDirectInheritorsSearcher() : QueryExecutorBase<PsiClass, Direct
         val scope = if (originalScope is GlobalSearchScope)
             originalScope
         else
-            baseClass.containingFile?.let { file -> file.fileScope() }
+            baseClass.containingFile?.let(PsiFile::fileScope)
 
         if (scope == null) return
 

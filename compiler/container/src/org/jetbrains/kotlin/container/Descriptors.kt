@@ -31,7 +31,7 @@ internal interface ComponentDescriptor : ValueDescriptor {
 
 class IterableDescriptor(val descriptors: Iterable<ValueDescriptor>) : ValueDescriptor {
     override fun getValue(): Any {
-        return descriptors.map { it.getValue() }
+        return descriptors.map(ValueDescriptor::getValue)
     }
 
     override fun toString(): String = "Iterable: $descriptors"

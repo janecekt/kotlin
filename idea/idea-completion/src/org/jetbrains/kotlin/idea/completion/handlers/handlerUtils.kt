@@ -126,7 +126,7 @@ fun createKeywordConstructLookupElement(
 private fun detectIndent(text: CharSequence, offset: Int): String {
     return text.substring(0, offset)
             .substringAfterLast('\n')
-            .takeWhile { it.isWhitespace() }
+            .takeWhile(Char::isWhitespace)
 }
 
 private fun String.indentLinesAfterFirst(indent: String): String {

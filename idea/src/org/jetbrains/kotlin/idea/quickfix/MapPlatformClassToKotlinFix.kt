@@ -81,7 +81,7 @@ class MapPlatformClassToKotlinFix(
             }
         }
 
-        imports.forEach { it.delete() }
+        imports.forEach(KtImportDirective::delete)
 
         if (usages.isEmpty()) {
             // if we are not going to replace any usages, there's no reason to continue at all

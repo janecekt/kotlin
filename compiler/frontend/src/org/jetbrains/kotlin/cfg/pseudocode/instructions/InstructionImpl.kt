@@ -51,7 +51,7 @@ abstract class InstructionImpl(override val blockScope: BlockScope): Instruction
 
     var markedAsDead: Boolean = false
 
-    override val dead: Boolean get() = allCopies?.all { it.markedAsDead } ?: markedAsDead
+    override val dead: Boolean get() = allCopies?.all(InstructionImpl::markedAsDead) ?: markedAsDead
 
     override val previousInstructions: MutableCollection<Instruction> = LinkedHashSet()
 

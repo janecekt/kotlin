@@ -223,11 +223,11 @@ class ExpectedInfos(
             val callExpression = (call.callElement as? KtExpression)?.getQualifiedExpressionForSelectorOrThis() ?: return results
             val expectedFuzzyTypes = ExpectedInfos(bindingContext, resolutionFacade, indicesHelper, useHeuristicSignatures, useOuterCallsExpectedTypeCount - 1)
                     .calculate(callExpression)
-                    .mapNotNull { it.fuzzyType }
+                    .mapNotNull(ExpectedInfo::fuzzyType)
             if (expectedFuzzyTypes.isEmpty() || expectedFuzzyTypes.any { it.freeParameters.isNotEmpty() }) return results
 
             return expectedFuzzyTypes
-                    .map { it.type }
+                    .map(FuzzyType::type)
                     .toSet()
                     .flatMap { calculateForArgument(call, it, argument) }
         }
@@ -305,7 +305,7 @@ class ExpectedInfos(
         }
         else {
             val namedArgumentCandidates = if (!isFunctionLiteralArgument && !isArrayAccess && descriptor.hasStableParameterNames()) {
-                val usedParameters = argumentToParameter.filter { it.key != argument }.map { it.value }.toSet()
+                val usedParameters = argumentToParameter.filter { it.key != argument }.map(Map.Entry<ValueArgument, ValueParameterDescriptor>::value).toSet()
                 descriptor.valueParameters.filter { it !in usedParameters }
             }
             else {
@@ -494,7 +494,7 @@ class ExpectedInfos(
         if (functionLiteral != null) {
             val literalExpression = functionLiteral.parent as KtLambdaExpression
             return calculate(literalExpression)
-                    .mapNotNull { it.fuzzyType }
+                    .mapNotNull(ExpectedInfo::fuzzyType)
                     .filter { it.type.isFunctionType }
                     .map {
                         val returnType = getReturnTypeFromFunctionType(it.type)

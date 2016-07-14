@@ -287,7 +287,7 @@ class KotlinSteppingCommandProvider: JvmSteppingCommandProvider() {
                 findElementsOfClassInRange(file, start, end, KtExpression::class.java)
                 .map { KtPsiUtil.getParentCallIfPresent(it as KtExpression) }
                 .filterIsInstance<KtCallExpression>()
-                .filter { isInlineCall(it) }
+                .filter(::isInlineCall)
                 .toSet()
 
         // It is necessary to check range because of multiline assign
@@ -349,7 +349,7 @@ fun getStepOverPosition(
     val locations = computedReferenceType.allLineLocations()
             .dropWhile { it != location }
             .drop(1)
-            .filter { isLocationSuitable(it) }
+            .filter(::isLocationSuitable)
             .dropWhile { it.lineNumber() == location.lineNumber() }
 
     for (locationAtLine in locations) {

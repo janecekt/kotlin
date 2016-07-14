@@ -35,7 +35,7 @@ class AnnotationsImpl : Annotations {
             @Suppress("UNUSED_PARAMETER") i: Int
     ) {
         this.targetedAnnotations = targetedAnnotations
-        this.annotations = targetedAnnotations.filter { it.target == null }.map { it.annotation }
+        this.annotations = targetedAnnotations.filter { it.target == null }.map(AnnotationWithTarget::annotation)
     }
 
     override fun isEmpty() = annotations.isEmpty()

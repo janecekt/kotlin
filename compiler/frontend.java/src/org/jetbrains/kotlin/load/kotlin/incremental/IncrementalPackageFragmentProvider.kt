@@ -76,7 +76,7 @@ class IncrementalPackageFragmentProvider(
             fqNameToPackageFragment[fqName] = IncrementalPackageFragment(fqName)
         }
 
-        fqNamesToLoad.forEach { createPackageFragment(it) }
+        fqNamesToLoad.forEach(::createPackageFragment)
     }
 
     override fun getSubPackagesOf(fqName: FqName, nameFilter: (Name) -> Boolean): Collection<FqName> {

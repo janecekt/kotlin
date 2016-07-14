@@ -346,7 +346,7 @@ open class KotlinChangeInfo(
             return makeSignatures(newParameters,
                                   currentPsiMethods,
                                   { parameterInfoToPsi[it] ?: dummyParameter },
-                                  { it.defaultValueForParameter })
+                                  KotlinParameterInfo::defaultValueForParameter)
         }
 
         fun matchOriginalAndCurrentMethods(currentPsiMethods: List<PsiMethod>): Map<PsiMethod, PsiMethod> {
@@ -361,7 +361,7 @@ open class KotlinChangeInfo(
             currentPsiMethods.singleOrNull()?.let { method -> return originalPsiMethods.keysToMap { method } }
 
             val currentSignatures = initCurrentSignatures(currentPsiMethods)
-            return originalSignatures.associateBy({ it.method }) { originalSignature ->
+            return originalSignatures.associateBy(JvmOverloadSignature::method) { originalSignature ->
                 var constrainedCurrentSignatures = currentSignatures.map { it.constrainBy(originalSignature) }
                 val maxMandatoryCount = constrainedCurrentSignatures.maxBy { it.mandatoryParams.size }!!.mandatoryParams.size
                 constrainedCurrentSignatures = constrainedCurrentSignatures.filter { it.mandatoryParams.size == maxMandatoryCount }
@@ -389,7 +389,7 @@ open class KotlinChangeInfo(
             else
                 PsiModifier.PACKAGE_LOCAL
             val propagationTargets = primaryPropagationTargets.asSequence()
-                    .mapNotNull { it.getRepresentativeLightMethod() }
+                    .mapNotNull(PsiElement::getRepresentativeLightMethod)
                     .toSet()
             val javaChangeInfo = ChangeSignatureProcessor(
                     method.project,

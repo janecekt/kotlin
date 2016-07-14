@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.platform.JavaToKotlinClassMap
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.renderer.render
+import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.resolve.annotations.hasJvmStaticAnnotation
 import org.jetbrains.kotlin.resolve.jvm.platform.JvmPlatform
 import org.jetbrains.kotlin.utils.singletonOrEmptyList
@@ -36,7 +37,7 @@ import org.jetbrains.kotlin.utils.singletonOrEmptyList
 fun Converter.convertImportList(importList: PsiImportList): ImportList {
     val imports = importList.allImportStatements
             .flatMap { convertImport(it) }
-            .distinctBy { it.name } // duplicated imports may appear
+            .distinctBy(Import::name) // duplicated imports may appear
     return ImportList(imports).assignPrototype(importList)
 }
 
@@ -49,7 +50,7 @@ fun Converter.convertImport(anImport: PsiImportStatementBase, dumpConversion: Bo
     }
     else {
         convertImport(fqName, reference, onDemand, anImport is PsiImportStaticStatement)
-                .map { Import(it) }
+                .map(::Import)
     }
     return convertedImports.map { it.assignPrototype(anImport) }
 }
@@ -156,8 +157,8 @@ private fun renderImportName(fqName: FqName, isOnDemand: Boolean)
         = if (isOnDemand) fqName.render() + ".*" else fqName.render()
 
 private val DEFAULT_IMPORTS_SET: Set<FqName> = JvmPlatform.defaultModuleParameters.defaultImports
-        .filter { it.isAllUnder }
-        .map { it.fqnPart() }
+        .filter(ImportPath::isAllUnder)
+        .map(ImportPath::fqnPart)
         .toSet()
 
 private fun isImportedByDefault(c: KtLightClass) = c.getFqName().parent() in DEFAULT_IMPORTS_SET

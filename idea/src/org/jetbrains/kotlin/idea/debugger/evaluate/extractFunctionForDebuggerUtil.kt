@@ -132,7 +132,7 @@ fun addDebugExpressionIntoTmpFileForExtractFunction(originalFile: KtFile, codeFr
     addImportsToFile(codeFragment.importsAsImportList(), tmpFile)
 
     val contentElementsInTmpFile = addDebugExpressionBeforeContextElement(codeFragment, contextElement)
-    contentElementsInTmpFile.forEach { it.insertSmartCasts() }
+    contentElementsInTmpFile.forEach(KtExpression::insertSmartCasts)
 
     codeFragment.clearContextElement()
     codeFragment.clearSmartCasts()
@@ -247,7 +247,7 @@ private fun addDebugExpressionBeforeContextElement(codeFragment: KtCodeFragment,
 
     fun insertExpression(expr: KtElement?): List<KtExpression> {
         when (expr) {
-            is KtBlockExpression -> return expr.statements.flatMap { insertExpression(it) }
+            is KtBlockExpression -> return expr.statements.flatMap(::insertExpression)
             is KtExpression -> {
                 val newDebugExpression = parent.addBefore(expr, elementBefore)
                 if (newDebugExpression == null) {

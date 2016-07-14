@@ -25,6 +25,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ClassifierDescriptor
+import org.jetbrains.kotlin.descriptors.SimpleFunctionDescriptor
 import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.diagnostics.Diagnostic
 import org.jetbrains.kotlin.diagnostics.Errors
@@ -144,7 +145,7 @@ object MissingIteratorExclExclFixFactory : KotlinSingleIntentionActionFactory() 
             val memberScope = descriptor.unsubstitutedMemberScope
             val functions = memberScope.getContributedFunctions(OperatorNameConventions.ITERATOR, NoLookupLocation.FROM_IDE)
 
-            return functions.any { it.isValidOperator() }
+            return functions.any(SimpleFunctionDescriptor::isValidOperator)
         }
 
         when (descriptor) {

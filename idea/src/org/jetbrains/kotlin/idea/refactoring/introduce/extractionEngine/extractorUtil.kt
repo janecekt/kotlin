@@ -104,7 +104,7 @@ private fun buildSignature(config: ExtractionGeneratorConfiguration, renderer: D
             }
         }
 
-        typeConstraints(config.descriptor.typeParameters.flatMap { it.originalConstraints }.map { it.text!! })
+        typeConstraints(config.descriptor.typeParameters.flatMap(TypeParameter::originalConstraints).map { it.text!! })
     }
 }
 
@@ -486,7 +486,7 @@ fun ExtractionGeneratorConfiguration.generateDeclaration(
          */
         val currentRefs = body
                 .collectDescendantsOfType<KtSimpleNameExpression> { it.resolveResult != null }
-                .sortedByDescending { it.startOffset }
+                .sortedByDescending(KtSimpleNameExpression::startOffset)
 
         currentRefs.forEach {
             val resolveResult = it.resolveResult!!
@@ -594,10 +594,10 @@ fun ExtractionGeneratorConfiguration.generateDeclaration(
         }
 
         val marginalCandidate = if (insertBefore) {
-            anchorCandidates.minBy { it.startOffset }!!
+            anchorCandidates.minBy(PsiElement::startOffset)!!
         }
         else {
-            anchorCandidates.maxBy { it.startOffset }!!
+            anchorCandidates.maxBy(PsiElement::startOffset)!!
         }
 
         // Ascend to the level of targetSibling
@@ -623,7 +623,7 @@ fun ExtractionGeneratorConfiguration.generateDeclaration(
     if (generatorOptions.inTempFile) return ExtractionResult(this, declaration, Collections.emptyMap())
 
     val replaceInitialOccurrence = {
-        val arguments = descriptor.parameters.map { it.argumentText }
+        val arguments = descriptor.parameters.map(Parameter::argumentText)
         makeCall(descriptor, declaration, descriptor.controlFlow, descriptor.extractionData.originalRange, arguments)
     }
 

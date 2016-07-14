@@ -59,7 +59,7 @@ class ExtractionEngine(
         val analysisResult = helper.adjustExtractionData(extractionData).performAnalysis()
 
         if (ApplicationManager.getApplication()!!.isUnitTestMode && analysisResult.status != AnalysisResult.Status.SUCCESS) {
-            throw BaseRefactoringProcessor.ConflictsInTestsException(analysisResult.messages.map { it.renderMessage() })
+            throw BaseRefactoringProcessor.ConflictsInTestsException(analysisResult.messages.map(AnalysisResult.ErrorMessage::renderMessage))
         }
 
         fun validateAndRefactor() {
@@ -77,7 +77,7 @@ class ExtractionEngine(
             }
         }
 
-        val message = analysisResult.messages.map { it.renderMessage() }.joinToString("\n")
+        val message = analysisResult.messages.map(AnalysisResult.ErrorMessage::renderMessage).joinToString("\n")
         when (analysisResult.status) {
             AnalysisResult.Status.CRITICAL_ERROR -> {
                 showErrorHint(project, editor, message, helper.operationName)

@@ -98,7 +98,7 @@ class StorageComponentContainer(id: String) : ComponentContainer, ComponentProvi
 
     override fun <T> create(request: Class<T>): T {
         val constructorBinding = request.bindToConstructor(unknownContext)
-        val args = constructorBinding.argumentDescriptors.map { it.getValue() }.toTypedArray()
+        val args = constructorBinding.argumentDescriptors.map(ValueDescriptor::getValue).toTypedArray()
         return constructorBinding.constructor.newInstance(*args) as T
     }
 }

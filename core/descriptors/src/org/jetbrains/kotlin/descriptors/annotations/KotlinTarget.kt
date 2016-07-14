@@ -85,7 +85,7 @@ enum class KotlinTarget(val description: String, val isDefault: Boolean = true) 
 
         fun valueOrNull(name: String): KotlinTarget? = map[name]
 
-        val DEFAULT_TARGET_SET: Set<KotlinTarget> = values().filter { it.isDefault }.toSet()
+        val DEFAULT_TARGET_SET: Set<KotlinTarget> = values().filter(KotlinTarget::isDefault).toSet()
 
         val ALL_TARGET_SET: Set<KotlinTarget> = values().toSet()
 

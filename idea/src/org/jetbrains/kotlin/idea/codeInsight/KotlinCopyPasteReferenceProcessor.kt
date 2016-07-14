@@ -251,7 +251,7 @@ class KotlinCopyPasteReferenceProcessor() : CopyPastePostProcessor<KotlinReferen
         }
         val referencedFqNames = referencedDescriptors
                 .filterNot { ErrorUtils.isError(it) }
-                .mapNotNull { it.importableFqName }
+                .mapNotNull(DeclarationDescriptor::importableFqName)
                 .toSet()
         if (referencedFqNames.singleOrNull() == originalFqName) return null
 

@@ -46,7 +46,7 @@ class LazyJavaStaticClassScope(
                 // Should be a super call, but KT-2860
                 return delegate.getMethodNames(nameFilter) +
                        // For SAM-constructors
-                       jClass.innerClasses.map { it.name }
+                       jClass.innerClasses.map(JavaClass::name)
             }
         }
     }

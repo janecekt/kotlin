@@ -152,9 +152,7 @@ class IfToWhenIntention : SelfTargetingRangeIntention<KtIfExpression>(KtIfExpres
 
         val result = element.replace(whenExpression)
         (if (applyFullCommentSaver) fullCommentSaver else elementCommentSaver).restore(result)
-        toDelete.forEach {
-            it.delete()
-        }
+        toDelete.forEach(PsiElement::delete)
     }
 
     private fun MutableList<KtExpression>.addOrBranches(expression: KtExpression): List<KtExpression> {

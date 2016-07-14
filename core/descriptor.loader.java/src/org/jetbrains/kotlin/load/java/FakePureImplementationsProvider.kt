@@ -42,4 +42,4 @@ object FakePureImplementationsProvider {
     )
 }
 
-private fun setOfFqNames(vararg names: String) = names.map { FqName(it) }.toSet()
+private fun setOfFqNames(vararg names: String) = names.map(::FqName).toSet()

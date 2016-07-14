@@ -103,8 +103,8 @@ class ChangeMemberFunctionSignatureFix private constructor(
             return superFunctions
                     .filter { it.kind.isReal }
                     .map { signatureToMatch(functionDescriptor, it) }
-                    .distinctBy { it.sourceCode }
-                    .sortedBy { it.preview }
+                    .distinctBy(Signature::sourceCode)
+                    .sortedBy(Signature::preview)
         }
 
         /**

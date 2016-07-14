@@ -176,7 +176,7 @@ abstract class CallableRefactoring<out T: CallableDescriptor>(
 
 fun getAffectedCallables(project: Project, descriptorsForChange: Collection<CallableDescriptor>): List<PsiElement> {
     val baseCallables = descriptorsForChange.mapNotNull { DescriptorToSourceUtilsIde.getAnyDeclaration(project, it) }
-    return baseCallables + baseCallables.flatMap { it.toLightMethods() }.flatMapTo(HashSet<PsiElement>()) { psiMethod ->
+    return baseCallables + baseCallables.flatMap(PsiElement::toLightMethods).flatMapTo(HashSet<PsiElement>()) { psiMethod ->
         val overrides = OverridingMethodsSearch.search(psiMethod).findAll()
         overrides.map { method -> method.namedUnwrappedElement ?: method}
     }

@@ -41,10 +41,7 @@ import org.jetbrains.kotlin.load.java.lazy.child
 import org.jetbrains.kotlin.load.java.lazy.resolveAnnotations
 import org.jetbrains.kotlin.load.java.lazy.types.RawSubstitution
 import org.jetbrains.kotlin.load.java.lazy.types.toAttributes
-import org.jetbrains.kotlin.load.java.structure.JavaArrayType
-import org.jetbrains.kotlin.load.java.structure.JavaClass
-import org.jetbrains.kotlin.load.java.structure.JavaConstructor
-import org.jetbrains.kotlin.load.java.structure.JavaMethod
+import org.jetbrains.kotlin.load.java.structure.*
 import org.jetbrains.kotlin.load.java.typeEnhancement.enhanceSignatures
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.DescriptorFactory
@@ -138,7 +135,7 @@ class LazyJavaClassMemberScope(
             // e.g. 'removeAt' or 'toInt'
             builtinName ->
             val builtinSpecialFromSuperTypes =
-                    getFunctionsFromSupertypes(builtinName).filter { it.doesOverrideBuiltinWithDifferentJvmName() }
+                    getFunctionsFromSupertypes(builtinName).filter(SimpleFunctionDescriptor::doesOverrideBuiltinWithDifferentJvmName)
             if (builtinSpecialFromSuperTypes.isEmpty()) return@any false
 
             val methodDescriptor = this.createRenamedCopy(builtinName)
@@ -628,11 +625,11 @@ class LazyJavaClassMemberScope(
     }
 
     private val nestedClassIndex = c.storageManager.createLazyValue {
-        jClass.innerClasses.associateBy { c -> c.name }
+        jClass.innerClasses.associateBy(JavaClass::name)
     }
 
     private val enumEntryIndex = c.storageManager.createLazyValue {
-        jClass.fields.filter { it.isEnumEntry }.associateBy { f -> f.name }
+        jClass.fields.filter(JavaField::isEnumEntry).associateBy(JavaField::name)
     }
 
     private val nestedClasses = c.storageManager.createMemoizedFunctionWithNullableValues {
@@ -682,9 +679,7 @@ class LazyJavaClassMemberScope(
 
         return memberIndex().getAllFieldNames() +
                ownerDescriptor.getTypeConstructor().getSupertypes().flatMapTo(LinkedHashSet<Name>()) { supertype ->
-            supertype.getMemberScope().getContributedDescriptors(kindFilter, nameFilter).map { variable ->
-                variable.getName()
-            }
+            supertype.getMemberScope().getContributedDescriptors(kindFilter, nameFilter).map(DeclarationDescriptor::getName)
         }
     }
 

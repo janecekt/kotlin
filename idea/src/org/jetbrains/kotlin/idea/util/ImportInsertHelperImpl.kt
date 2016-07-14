@@ -358,7 +358,7 @@ class ImportInsertHelperImpl(private val project: Project) : ImportInsertHelper(
         }
 
         private fun targetFqName(ref: KtReferenceExpression): FqName?
-                = ref.resolveTargets().map { it.importableFqName }.toSet().singleOrNull()
+                = ref.resolveTargets().map(DeclarationDescriptor::importableFqName).toSet().singleOrNull()
 
         private fun KtReferenceExpression.resolveTargets(): Collection<DeclarationDescriptor>
                 = this.getImportableTargets(resolutionFacade.analyze(this, BodyResolveMode.PARTIAL))

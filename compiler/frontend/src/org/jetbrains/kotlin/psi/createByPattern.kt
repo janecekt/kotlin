@@ -84,7 +84,7 @@ private val SUPPORTED_ARGUMENT_TYPES = listOf(
         PsiElementArgumentType<KtExpression>(KtExpression::class.java),
         PsiElementArgumentType<KtTypeReference>(KtTypeReference::class.java),
         PlainTextArgumentType<String>(String::class.java, toPlainText = { it }),
-        PlainTextArgumentType<Name>(Name::class.java, toPlainText = { it.render() }),
+        PlainTextArgumentType<Name>(Name::class.java, toPlainText = Name::render),
         PsiChildRangeArgumentType
 )
 
@@ -142,9 +142,9 @@ fun <TElement : KtElement> createByPattern(pattern: String, vararg args: Any, fa
 
     val stringPlaceholderRanges = allPlaceholders
             .filter { args[it.key] is String }
-            .flatMap { it.value }
-            .map { it.range }
-            .filterNot { it.isEmpty }
+            .flatMap(Map.Entry<Int, List<Placeholder>>::value)
+            .map(Placeholder::range)
+            .filterNot(TextRange::isEmpty)
             .sortedByDescending { it.startOffset }
 
     // reformat whole text except for String arguments (as they can contain user's formatting to be preserved)

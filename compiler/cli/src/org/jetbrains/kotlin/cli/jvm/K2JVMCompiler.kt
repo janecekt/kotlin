@@ -296,7 +296,7 @@ class K2JVMCompiler : CLICompiler<K2JVMCompilerArguments>() {
         private fun getClasspath(paths: KotlinPaths, arguments: K2JVMCompilerArguments): List<File> {
             val classpath = arrayListOf<File>()
             if (arguments.classpath != null) {
-                classpath.addAll(arguments.classpath.split(File.pathSeparatorChar).map { File(it) })
+                classpath.addAll(arguments.classpath.split(File.pathSeparatorChar).map(::File))
             }
             if (!arguments.noStdlib) {
                 classpath.add(paths.runtimePath)

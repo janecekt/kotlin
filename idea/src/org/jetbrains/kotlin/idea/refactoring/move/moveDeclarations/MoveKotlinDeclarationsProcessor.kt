@@ -114,8 +114,8 @@ class MoveKotlinDeclarationsProcessor(
     private var nonCodeUsages: Array<NonCodeUsageInfo>? = null
     private val elementsToMove = descriptor.elementsToMove.filter { e -> e.parent != descriptor.moveTarget.getTargetPsiIfExists(e) }
     private val kotlinToLightElementsBySourceFile = elementsToMove
-            .groupBy { it.getContainingKtFile() }
-            .mapValues { it.value.keysToMap { it.toLightElements() } }
+            .groupBy(KtNamedDeclaration::getContainingKtFile)
+            .mapValues { it.value.keysToMap(KtNamedDeclaration::toLightElements) }
     private val conflicts = MultiMap<PsiElement, String>()
 
     private val resolutionFacade by lazy { KotlinCacheService.getInstance(project).getResolutionFacade(elementsToMove) }

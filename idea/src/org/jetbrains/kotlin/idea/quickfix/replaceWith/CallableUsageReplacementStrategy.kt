@@ -524,7 +524,7 @@ private fun arrayOfFunctionName(elementType: KotlinType): String {
 private fun removeExplicitTypeArguments(result: KtElement) {
     result.collectDescendantsOfType<KtTypeArgumentList>(canGoInside = { !it[USER_CODE_KEY] }) {
         RemoveExplicitTypeArgumentsIntention.isApplicableTo(it, approximateFlexible = true)
-    }.forEach { it.delete() }
+    }.forEach(KtTypeArgumentList::delete)
 }
 
 private fun simplifySpreadArrayOfArguments(result: KtElement) {
@@ -585,7 +585,7 @@ private fun restoreFunctionLiteralArguments(expression: KtElement) {
         callExpressions.add(callExpression)
     })
 
-    callExpressions.forEach { it.moveFunctionLiteralOutsideParentheses() }
+    callExpressions.forEach(KtCallExpression::moveFunctionLiteralOutsideParentheses)
 }
 
 internal operator fun <T: Any> PsiElement.get(key: Key<T>): T? = getCopyableUserData(key)

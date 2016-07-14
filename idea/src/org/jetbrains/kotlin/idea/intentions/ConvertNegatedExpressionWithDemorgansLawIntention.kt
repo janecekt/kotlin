@@ -55,7 +55,7 @@ class ConvertNegatedExpressionWithDemorgansLawIntention : SelfTargetingOffsetInd
         val operands = splitBooleanSequence(baseExpression)!!.asReversed()
 
         val newExpression = KtPsiFactory(element).buildExpression {
-            appendExpressions(operands.map { it.negate() }, separator = operatorText)
+            appendExpressions(operands.map(KtExpression::negate), separator = operatorText)
         }
 
         element.replace(newExpression)

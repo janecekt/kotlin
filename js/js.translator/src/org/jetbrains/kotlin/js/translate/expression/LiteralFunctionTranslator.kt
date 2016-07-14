@@ -147,11 +147,11 @@ private fun moveCapturedLocalInside(capturingFunction: JsFunction, capturedName:
     val scope = capturingFunction.getInnerFunction()?.scope!!
     val freshNames = getFreshNamesInScope(scope, capturedArgs)
 
-    val aliasCallArguments = freshNames.map { it.makeRef() }
+    val aliasCallArguments = freshNames.map(JsName::makeRef)
     val alias = JsInvocation(localFunAlias.qualifier, aliasCallArguments)
     declareAliasInsideFunction(capturingFunction, capturedName, alias)
 
-    val capturedParameters = freshNames.map {JsParameter(it)}
+    val capturedParameters = freshNames.map(::JsParameter)
     return CapturedArgsParams(capturedArgs, capturedParameters)
 }
 

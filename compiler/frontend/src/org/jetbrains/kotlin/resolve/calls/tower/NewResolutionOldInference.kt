@@ -186,7 +186,7 @@ class NewResolutionOldInference(
 
     private fun <D: CallableDescriptor> allCandidatesResult(allCandidates: Collection<MyCandidate<D>>)
             = OverloadResolutionResultsImpl.nameNotFound<D>().apply {
-        this.allCandidates = allCandidates.map { it.resolvedCall }
+        this.allCandidates = allCandidates.map(MyCandidate<D>::resolvedCall)
     }
 
     private fun <D : CallableDescriptor> createProcessorWithReceiverValueOrEmpty(

@@ -60,10 +60,10 @@ object KotlinCompilerClient {
         }
 
         val flagFile = System.getProperty(COMPILE_DAEMON_CLIENT_ALIVE_PATH_PROPERTY)
-                     ?.let { it.trimQuotes() }
+                     ?.let(String::trimQuotes)
                      ?.check { !it.isBlank() }
-                     ?.let { File(it) }
-                     ?.check { it.exists() }
+                     ?.let(::File)
+                     ?.check(File::exists)
                      ?: newFlagFile()
         return connectToCompileService(compilerId, flagFile, daemonJVMOptions, daemonOptions, reportingTargets, autostart)
     }

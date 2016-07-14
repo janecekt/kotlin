@@ -101,7 +101,7 @@ class KotlinPushDownProcessor(
         return HierarchySearchRequest(context.sourceClass, context.sourceClass.useScope, false)
                 .searchInheritors()
                 .mapNotNull { it.unwrapped }
-                .map { SubclassUsage(it) }
+                .map(::SubclassUsage)
                 .toTypedArray()
     }
 

@@ -153,7 +153,7 @@ class JavaToKotlinConverter(
         val map: Map<PsiElement, Collection<UsageProcessing>> = usageProcessings.values
                 .flatMap { it }
                 .filter { it.javaCodeProcessors.isNotEmpty() || it.kotlinCodeProcessors.isNotEmpty() }
-                .groupBy { it.targetElement }
+                .groupBy(UsageProcessing::targetElement)
         if (map.isEmpty()) return null
 
         return object: ExternalCodeProcessing {
@@ -187,12 +187,12 @@ class JavaToKotlinConverter(
     }
 
     private fun processUsages(refs: Collection<ReferenceInfo>) {
-        for (fileRefs in refs.groupBy { it.file }.values) { // group by file for faster sorting
+        for (fileRefs in refs.groupBy(ReferenceInfo::file).values) { // group by file for faster sorting
             ReferenceLoop@
             for ((reference, target, file, processings) in fileRefs.sortedWith(ReferenceComparator)) {
                 val processors = when (reference.element.language) {
-                    JavaLanguage.INSTANCE -> processings.flatMap { it.javaCodeProcessors }
-                    KotlinLanguage.INSTANCE -> processings.flatMap { it.kotlinCodeProcessors }
+                    JavaLanguage.INSTANCE -> processings.flatMap(UsageProcessing::javaCodeProcessors)
+                    KotlinLanguage.INSTANCE -> processings.flatMap(UsageProcessing::kotlinCodeProcessors)
                     else -> continue@ReferenceLoop
                 }
 

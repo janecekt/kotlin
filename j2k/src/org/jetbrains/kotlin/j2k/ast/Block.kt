@@ -21,10 +21,10 @@ import org.jetbrains.kotlin.j2k.append
 
 class Block(val statements: List<Statement>, val lBrace: LBrace, val rBrace: RBrace, val notEmpty: Boolean = false) : Statement() {
     override val isEmpty: Boolean
-        get() = !notEmpty && statements.all { it.isEmpty }
+        get() = !notEmpty && statements.all(Statement::isEmpty)
 
     override fun generateCode(builder: CodeBuilder) {
-        if (statements.all { it.isEmpty }) {
+        if (statements.all(Statement::isEmpty)) {
             if (!isEmpty) builder.append(lBrace).append(rBrace)
             return
         }

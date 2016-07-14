@@ -72,7 +72,7 @@ class NewKotlinActivityAction: AnAction(KotlinIcons.ACTIVITY) {
             private fun convertFiles(project: Project) {
                 if (javaFilesToKotlin != null) {
                     DumbService.getInstance(project).smartInvokeLater {
-                        val filesToConvert = javaFilesToKotlin!!.filter { it.isValid }
+                        val filesToConvert = javaFilesToKotlin!!.filter(PsiJavaFile::isValid)
                         if (filesToConvert.isNotEmpty()) {
                             JavaToKotlinAction.convertFiles(filesToConvert, project, false)
                         }

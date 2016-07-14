@@ -18,9 +18,11 @@ package org.jetbrains.kotlin.load.kotlin.incremental
 
 import org.jetbrains.kotlin.descriptors.PackagePartProvider
 import org.jetbrains.kotlin.load.kotlin.ModuleMapping
+import org.jetbrains.kotlin.load.kotlin.PackageParts
 import org.jetbrains.kotlin.load.kotlin.incremental.components.IncrementalCache
 import org.jetbrains.kotlin.load.kotlin.incremental.components.IncrementalCompilationComponents
 import org.jetbrains.kotlin.modules.TargetId
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.storage.StorageManager
 
@@ -32,13 +34,13 @@ internal class IncrementalPackagePartProvider private constructor(
 ) : PackagePartProvider {
     private val moduleMappings = storageManager.createLazyValue { incrementalCaches.map { ModuleMapping.create(it.getModuleMappingData()) } }
     private val fqNamesToIgnore =
-            incrementalCaches.flatMap { IncrementalPackageFragmentProvider.fqNamesToLoad(it.getObsoletePackageParts(), sourceFiles).map { it.asString() } }
+            incrementalCaches.flatMap { IncrementalPackageFragmentProvider.fqNamesToLoad(it.getObsoletePackageParts(), sourceFiles).map(FqName::asString) }
 
     override fun findPackageParts(packageFqName: String): List<String> {
         val packagePartsFromParent = parent.findPackageParts(packageFqName)
         if (packageFqName in fqNamesToIgnore) return packagePartsFromParent
 
-        val packagePartsFromCompiled = moduleMappings().mapNotNull { it.findPackageParts(packageFqName) }.flatMap { it.parts }
+        val packagePartsFromCompiled = moduleMappings().mapNotNull { it.findPackageParts(packageFqName) }.flatMap(PackageParts::parts)
         return (packagePartsFromCompiled + packagePartsFromParent).distinct()
     }
 

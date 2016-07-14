@@ -43,8 +43,8 @@ class Modifiers(modifiers: Collection<Modifier>) : Element() {
         else
             modifiers.filter { it != Modifier.PUBLIC }
         val text = modifiersToInclude
-                .sortedBy { it.ordinal }
-                .map { it.toKotlin() }
+                .sortedBy(Modifier::ordinal)
+                .map(Modifier::toKotlin)
                 .joinToString(" ")
         builder.append(text)
     }

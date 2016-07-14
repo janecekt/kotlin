@@ -295,7 +295,7 @@ class SelectionAwareScopeHighlighter(val editor: Editor) {
     }
 
     fun dropHighlight() {
-        highlighters.forEach { it.dispose() }
+        highlighters.forEach(RangeHighlighter::dispose)
         highlighters.clear()
     }
 }

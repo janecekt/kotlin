@@ -53,7 +53,7 @@ private fun <TDeclaration : KtCallableDeclaration> KtTypeElement.index(declarati
 
             occurrence(referenceName)
 
-            aliasImportMap()[referenceName].forEach { occurrence(it) }
+            aliasImportMap()[referenceName].forEach(::occurrence)
         }
 
         is KtNullableType -> innerType?.index(declaration, sink)

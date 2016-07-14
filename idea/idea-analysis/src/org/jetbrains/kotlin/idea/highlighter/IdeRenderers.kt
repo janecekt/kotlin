@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.resolve.MemberComparator
 import org.jetbrains.kotlin.resolve.calls.inference.InferenceErrorData
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.jvm.diagnostics.ConflictingJvmDeclarationsData
+import org.jetbrains.kotlin.resolve.jvm.diagnostics.JvmDeclarationOrigin
 import kotlin.comparisons.compareBy
 
 object IdeRenderers {
@@ -77,7 +78,7 @@ object IdeRenderers {
         data: ConflictingJvmDeclarationsData ->
 
         val descriptors = data.signatureOrigins
-                .mapNotNull { it.descriptor }
+                .mapNotNull(JvmDeclarationOrigin::descriptor)
                 .sortedWith(MemberComparator.INSTANCE)
         val context = RenderingContext.of(descriptors)
         val conflicts = descriptors.joinToString("") { "<li>" + HTML_COMPACT_WITH_MODIFIERS.render(it, context) + "</li>\n" }

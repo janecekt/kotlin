@@ -195,7 +195,7 @@ private fun getCommonNonTrivialSuccessorIfAny(instructions: List<Instruction>): 
         }
     }
 
-    if (instructions.flatMap { it.nextInstructions }.any { !it.accept(singleSuccessorCheckingVisitor) }) return null
+    if (instructions.flatMap(Instruction::nextInstructions).any { !it.accept(singleSuccessorCheckingVisitor) }) return null
     return singleSuccessorCheckingVisitor.target ?: instructions.firstOrNull()?.owner?.sinkInstruction
 }
 
@@ -304,7 +304,7 @@ private fun ExtractionData.analyzeControlFlow(
     }
 
     val outParameters =
-            parameters.filter { it.mirrorVarName != null && modifiedVarDescriptors[it.originalDescriptor] != null }.sortedBy { it.nameForRef }
+            parameters.filter { it.mirrorVarName != null && modifiedVarDescriptors[it.originalDescriptor] != null }.sortedBy(Parameter::nameForRef)
     val outDeclarations =
             declarationsToCopy.filter { modifiedVarDescriptors[bindingContext[BindingContext.DECLARATION_TO_DESCRIPTOR, it]] != null }
     val modifiedValueCount = outParameters.size + outDeclarations.size
@@ -662,7 +662,7 @@ fun ExtractionData.performAnalysis(): AnalysisResult {
     returnType.processTypeIfExtractable(paramsInfo.typeParameters, paramsInfo.nonDenotableTypes, options, targetScope)
 
     if (paramsInfo.nonDenotableTypes.isNotEmpty()) {
-        val typeStr = paramsInfo.nonDenotableTypes.map {it.renderForMessage()}.sorted()
+        val typeStr = paramsInfo.nonDenotableTypes.map(KotlinType::renderForMessage).sorted()
         return AnalysisResult(
                 null,
                 Status.CRITICAL_ERROR,
@@ -692,7 +692,7 @@ fun ExtractionData.performAnalysis(): AnalysisResult {
                     bindingContext,
                     suggestFunctionNames(returnType),
                     getDefaultVisibility(),
-                    adjustedParameters.sortedBy { it.name },
+                    adjustedParameters.sortedBy(Parameter::name),
                     receiverParameter,
                     paramsInfo.typeParameters.sortedBy { it.originalDeclaration.name!! },
                     paramsInfo.replacementMap,

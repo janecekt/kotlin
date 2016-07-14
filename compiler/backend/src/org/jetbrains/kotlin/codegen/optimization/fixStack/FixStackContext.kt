@@ -99,7 +99,7 @@ internal class FixStackContext(val methodNode: MethodNode) {
     }
 
     private fun visitRestoreStackInTryCatch(insnNode: AbstractInsnNode) {
-        val restoreLabel = insnNode.findPreviousOrNull { it.hasOpcode() }!!.findPreviousOrNull { it is LabelNode || it.hasOpcode() }!!
+        val restoreLabel = insnNode.findPreviousOrNull(AbstractInsnNode::hasOpcode)!!.findPreviousOrNull { it is LabelNode || it.hasOpcode() }!!
         if (restoreLabel !is LabelNode) {
             throw AssertionError("${indexOf(insnNode)}: restore should be preceded by a catch block label")
         }

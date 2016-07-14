@@ -80,7 +80,7 @@ class KotlinPullUpHandler : AbstractPullPushMembersHandler(
                     if ((declaration is KtClass || declaration is PsiClass)
                         && declaration.canRefactor()) declaration as PsiNamedElement else null
                 }
-                .sortedBy { it.qualifiedClassNameForRendering() }
+                .sortedBy(PsiNamedElement::qualifiedClassNameForRendering)
 
         if (superClasses.isEmpty()) {
             val containingClass = classOrObject.getStrictParentOfType<KtClassOrObject>()

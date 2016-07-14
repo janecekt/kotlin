@@ -49,7 +49,7 @@ fun selectElementsWithTargetSibling(
         continuation: (elements: List<PsiElement>, targetSibling: PsiElement) -> Unit
 ) {
     fun onSelectionComplete(elements: List<PsiElement>, targetContainer: PsiElement) {
-        val physicalElements = elements.map { it.substringContextOrThis }
+        val physicalElements = elements.map(PsiElement::substringContextOrThis)
         val parent = PsiTreeUtil.findCommonParent(physicalElements)
                      ?: throw AssertionError("Should have at least one parent: ${physicalElements.joinToString("\n")}")
 
@@ -83,7 +83,7 @@ fun selectElementsWithTargetParent(
     }
 
     fun selectTargetContainer(elements: List<PsiElement>) {
-        val physicalElements = elements.map { it.substringContextOrThis }
+        val physicalElements = elements.map(PsiElement::substringContextOrThis)
         val parent = PsiTreeUtil.findCommonParent(physicalElements)
                      ?: throw AssertionError("Should have at least one parent: ${physicalElements.joinToString("\n")}")
 

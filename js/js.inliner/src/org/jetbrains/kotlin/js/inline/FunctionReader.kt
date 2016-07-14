@@ -70,7 +70,7 @@ class FunctionReader(private val context: TranslationContext) {
 
     init {
         val config = context.config as LibrarySourcesConfig
-        val libs = config.libraries.map { File(it) }
+        val libs = config.libraries.map(::File)
 
         JsLibraryUtils.traverseJsLibraries(libs) { fileContent, path ->
             var current = 0

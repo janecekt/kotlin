@@ -37,7 +37,7 @@ fun CompilerConfiguration.addJvmClasspathRoots(files: List<File>): Unit = files.
 
 val CompilerConfiguration.jvmClasspathRoots: List<File>
     get() {
-        return get(JVMConfigurationKeys.CONTENT_ROOTS)?.filterIsInstance<JvmClasspathRoot>()?.map { it.file } ?: emptyList()
+        return get(JVMConfigurationKeys.CONTENT_ROOTS)?.filterIsInstance<JvmClasspathRoot>()?.map(JvmClasspathRoot::file) ?: emptyList()
     }
 
 @JvmOverloads fun CompilerConfiguration.addJavaSourceRoot(file: File, packagePrefix: String? = null) {

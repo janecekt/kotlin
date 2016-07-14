@@ -43,7 +43,7 @@ interface IndexedImports {
 }
 
 class AllUnderImportsIndexed(allImports: Collection<KtImportDirective>) : IndexedImports {
-    override val imports = allImports.filter { it.isAllUnder() }
+    override val imports = allImports.filter(KtImportDirective::isAllUnder)
     override fun importsForName(name: Name) = imports
 }
 

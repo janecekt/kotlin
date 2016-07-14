@@ -71,7 +71,7 @@ private data class DeprecatedByOverridden(private val deprecations: Collection<D
 
     override val message: String
         get() {
-            val message = deprecations.filter { it.deprecationLevel == this.deprecationLevel }.map { it.message }.toSet().joinToString(". ")
+            val message = deprecations.filter { it.deprecationLevel == this.deprecationLevel }.map(Deprecation::message).toSet().joinToString(". ")
             return "${additionalMessage()}. $message"
         }
 
@@ -112,7 +112,7 @@ private fun deprecationByOverridden(root: CallableMemberDescriptor): Deprecation
                 return
             }
             else -> {
-                overriddenDescriptors.forEach { traverse(it) }
+                overriddenDescriptors.forEach(::traverse)
             }
         }
     }

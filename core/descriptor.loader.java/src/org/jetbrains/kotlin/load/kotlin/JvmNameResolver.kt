@@ -129,7 +129,7 @@ class JvmNameResolver(
                 "kotlin/collections/ListIterator", "kotlin/collections/MutableListIterator"
         )
 
-        private val PREDEFINED_STRINGS_MAP = PREDEFINED_STRINGS.withIndex().associateBy({ it.value }, { it.index })
+        private val PREDEFINED_STRINGS_MAP = PREDEFINED_STRINGS.withIndex().associateBy(IndexedValue<String>::value, IndexedValue<String>::index)
 
         fun getPredefinedStringIndex(string: String): Int? = PREDEFINED_STRINGS_MAP[string]
     }

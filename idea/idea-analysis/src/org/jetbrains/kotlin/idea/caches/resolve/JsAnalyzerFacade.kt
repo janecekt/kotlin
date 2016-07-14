@@ -35,6 +35,7 @@ import org.jetbrains.kotlin.resolve.TargetPlatform
 import org.jetbrains.kotlin.resolve.lazy.ResolveSession
 import org.jetbrains.kotlin.resolve.lazy.declarations.DeclarationProviderFactoryService
 import org.jetbrains.kotlin.serialization.js.KotlinJavascriptSerializationUtil
+import org.jetbrains.kotlin.utils.KotlinJavascriptMetadata
 import org.jetbrains.kotlin.utils.KotlinJavascriptMetadataUtils
 
 object JsAnalyzerFacade : AnalyzerFacade<PlatformAnalysisParameters>() {
@@ -64,7 +65,7 @@ object JsAnalyzerFacade : AnalyzerFacade<PlatformAnalysisParameters>() {
         if (moduleInfo is LibraryInfo && KotlinJavaScriptLibraryDetectionUtil.isKotlinJavaScriptLibrary(moduleInfo.library)) {
             val providers = moduleInfo.library.getFiles(OrderRootType.CLASSES)
                     .flatMap { KotlinJavascriptMetadataUtils.loadMetadata(PathUtil.getLocalPath(it)!!) }
-                    .filter { it.isAbiVersionCompatible }
+                    .filter(KotlinJavascriptMetadata::isAbiVersionCompatible)
                     .mapNotNull {
                         KotlinJavascriptSerializationUtil.readModule(it.body, moduleContext.storageManager, moduleDescriptor).data
                     }

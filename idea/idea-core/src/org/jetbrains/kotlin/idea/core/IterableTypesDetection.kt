@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.idea.core
 
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.idea.util.FuzzyType
 import org.jetbrains.kotlin.idea.util.toFuzzyType
@@ -52,7 +53,7 @@ class IterableTypesDetection(
 
         private val typesWithExtensionIterator: Collection<KotlinType> = scope
                 .collectFunctions(iteratorName, NoLookupLocation.FROM_IDE)
-                .filter { it.isValidOperator() }
+                .filter(FunctionDescriptor::isValidOperator)
                 .mapNotNull { it.extensionReceiverParameter?.type }
 
         override fun isIterable(type: FuzzyType, loopVarType: KotlinType?): Boolean {

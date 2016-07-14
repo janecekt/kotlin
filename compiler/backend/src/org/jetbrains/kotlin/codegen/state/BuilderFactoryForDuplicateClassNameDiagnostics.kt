@@ -40,10 +40,10 @@ class BuilderFactoryForDuplicateClassNameDiagnostics(
     }
 
     private fun reportError(internalName: String, vararg another: JvmDeclarationOrigin) {
-        val fromString = another.mapNotNull { it.descriptor }.
+        val fromString = another.mapNotNull(JvmDeclarationOrigin::descriptor).
                 joinToString { DescriptorRenderer.ONLY_NAMES_WITH_SHORT_TYPES.render(it) }
 
-        another.mapNotNull { it.element }.forEach {
+        another.mapNotNull(JvmDeclarationOrigin::element).forEach {
             diagnostics.report(ErrorsJvm.DUPLICATE_CLASS_NAMES.on(it, internalName, fromString))
         }
     }

@@ -26,6 +26,6 @@ class IDEPackagePartProvider(val scope: GlobalSearchScope) : PackagePartProvider
 
     override fun findPackageParts(packageFqName: String): List<String> {
         val values: MutableList<PackageParts> = FileBasedIndex.getInstance().getValues(KotlinModuleMappingIndex.KEY, packageFqName, scope)
-        return values.flatMap { it.parts }.distinct()
+        return values.flatMap(PackageParts::parts).distinct()
     }
 }

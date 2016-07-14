@@ -78,7 +78,7 @@ fun <TCallable : CallableDescriptor> TCallable.substituteExtensionIfCallable(
 
     var types = receiverTypes.asSequence()
     if (callType == CallType.SAFE) {
-        types = types.map { it.makeNotNullable() }
+        types = types.map(KotlinType::makeNotNullable)
     }
 
     val extensionReceiverType = fuzzyExtensionReceiverType()!!

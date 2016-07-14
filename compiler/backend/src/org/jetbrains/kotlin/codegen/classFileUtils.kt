@@ -30,7 +30,7 @@ fun List<OutputFile>.filterClassFiles(): Iterable<OutputFile> {
 }
 
 fun List<PackageParts>.addCompiledPartsAndSort(state: GenerationState): List<PackageParts> =
-        addCompiledParts(state).sortedBy { it.packageFqName }
+        addCompiledParts(state).sortedBy(PackageParts::packageFqName)
 
 private fun List<PackageParts>.addCompiledParts(state: GenerationState): List<PackageParts> {
     if (state.incrementalCompilationComponents == null || state.targetId == null) return this
@@ -48,7 +48,7 @@ private fun List<PackageParts>.addCompiledParts(state: GenerationState): List<Pa
     }
 
     return (this + mapping.packageFqName2Parts.values)
-            .groupBy { it.packageFqName }
+            .groupBy(PackageParts::packageFqName)
             .map {
                 val (packageFqName, packageParts) = it
                 val newPackageParts = PackageParts(packageFqName)

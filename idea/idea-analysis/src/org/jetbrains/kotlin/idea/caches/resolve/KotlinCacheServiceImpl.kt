@@ -49,7 +49,7 @@ internal val LOG = Logger.getInstance(KotlinCacheService::class.java)
 
 class KotlinCacheServiceImpl(val project: Project) : KotlinCacheService {
     override fun getResolutionFacade(elements: List<KtElement>): ResolutionFacade {
-        return getFacadeToAnalyzeFiles(elements.map { it.getContainingKtFile() })
+        return getFacadeToAnalyzeFiles(elements.map(KtElement::getContainingKtFile))
     }
 
     override fun getSuppressionCache(): KotlinSuppressCache = kotlinSuppressCache.value
@@ -63,7 +63,7 @@ class KotlinCacheServiceImpl(val project: Project) : KotlinCacheService {
                     project,
                     platform,
                     logProcessCanceled = true,
-                    moduleFilter = { it.isLibraryClasses() },
+                    moduleFilter = IdeaModuleInfo::isLibraryClasses,
                     dependencies = listOf(
                             LibraryModificationTracker.getInstance(project),
                             ProjectRootModificationTracker.getInstance(project)
@@ -94,7 +94,7 @@ class KotlinCacheServiceImpl(val project: Project) : KotlinCacheService {
     private fun createFacadeForSyntheticFiles(files: Set<KtFile>): ProjectResolutionFacade {
         // we assume that all files come from the same module
         val targetPlatform = files.map { TargetPlatformDetector.getPlatform(it) }.toSet().single()
-        val syntheticFileModule = files.map { it.getModuleInfo() }.toSet().single()
+        val syntheticFileModule = files.map(KtFile::getModuleInfo).toSet().single()
         val filesModificationTracker = ModificationTracker {
             // TODO: Check getUserData(FILE_OUT_OF_BLOCK_MODIFICATION_COUNT) actually works
             files.sumByLong { it.outOfBlockModificationCount + it.modificationStamp }

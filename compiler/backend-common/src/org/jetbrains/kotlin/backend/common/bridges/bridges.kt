@@ -46,7 +46,7 @@ fun <Function : FunctionHandle, Signature> generateBridges(
 
     // If it's a concrete fake override and all of its super-functions are concrete, then every possible bridge is already generated
     // into some of the super-classes and will be inherited in this class
-    if (fake && function.getOverridden().none { it.isAbstract }) return setOf()
+    if (fake && function.getOverridden().none(FunctionHandle::isAbstract)) return setOf()
 
     val implementation = findConcreteSuperDeclaration(function)
 

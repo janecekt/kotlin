@@ -429,9 +429,7 @@ class DeclarationsChecker(
                 val declarationDescriptor = it.constructor.declarationDescriptor
                 if (declarationDescriptor is TypeParameterDescriptor && declarationDescriptor in allTypeParameters) {
                     if (allAccessibleTypeParameters.add(declarationDescriptor)) {
-                        declarationDescriptor.upperBounds.forEach {
-                            addAccessibleTypeParametersFromType(it)
-                        }
+                        declarationDescriptor.upperBounds.forEach(::addAccessibleTypeParametersFromType)
                     }
                 }
                 false

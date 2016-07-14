@@ -54,6 +54,6 @@ open class DeserializedAnnotationsWithPossibleTargets(
     override fun getAllAnnotations() = annotations()
 
     override fun iterator(): Iterator<AnnotationDescriptor> {
-        return annotations().asSequence().filter { it.target == null }.map { it.annotation }.iterator()
+        return annotations().asSequence().filter { it.target == null }.map(AnnotationWithTarget::annotation).iterator()
     }
 }

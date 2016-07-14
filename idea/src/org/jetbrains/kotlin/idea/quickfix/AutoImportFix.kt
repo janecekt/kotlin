@@ -214,7 +214,7 @@ internal class AutoImportFix(expression: KtSimpleNameExpression) : AutoImportFix
 
     companion object : KotlinSingleIntentionActionFactory() {
         override fun createAction(diagnostic: Diagnostic) =
-                (diagnostic.psiElement as? KtSimpleNameExpression)?.let { AutoImportFix(it) }
+                (diagnostic.psiElement as? KtSimpleNameExpression)?.let(::AutoImportFix)
 
         override fun isApplicableForCodeFragment() = true
 

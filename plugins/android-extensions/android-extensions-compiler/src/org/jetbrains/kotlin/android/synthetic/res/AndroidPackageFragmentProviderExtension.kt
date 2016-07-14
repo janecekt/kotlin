@@ -96,7 +96,7 @@ class AndroidSyntheticPackageFragmentProvider(
 
     override fun getSubPackagesOf(fqName: FqName, nameFilter: (Name) -> Boolean) =
             packageFragments.asSequence()
-                    .map { it.fqName }
+                    .map(PackageFragmentDescriptor::fqName)
                     .filter { !it.isRoot && it.parent() == fqName }
                     .toList()
 }

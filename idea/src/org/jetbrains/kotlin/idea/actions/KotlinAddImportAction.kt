@@ -64,8 +64,8 @@ internal fun createSingleImportAction(project: Project,
                 val priority = sameFqNameDescriptors.map { prioritizer.priority(it) }.min()!!
                 Prioritizer.VariantWithPriority(SingleImportVariant(fqName, sameFqNameDescriptors), priority)
             }
-            .sortedBy { it.priority }
-            .map { it.variant }
+            .sortedBy(Prioritizer.VariantWithPriority::priority)
+            .map(Prioritizer.VariantWithPriority::variant)
 
     return KotlinAddImportAction(project, editor, element, variants)
 }
@@ -91,10 +91,8 @@ internal fun createGroupedImportsAction(project: Project,
                 val priority = prioritizer.priority(samePackageDescriptors)
                 DescriptorGroupPrioritizer.VariantWithPriority(variant, priority)
             }
-            .sortedBy {
-                it.priority
-            }
-            .map { it.variant }
+            .sortedBy(DescriptorGroupPrioritizer.VariantWithPriority::priority)
+            .map(DescriptorGroupPrioritizer.VariantWithPriority::variant)
 
     return KotlinAddImportAction(project, editor, element, variants)
 }

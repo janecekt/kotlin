@@ -78,7 +78,7 @@ class AddNameToArgumentFix(argument: KtValueArgument) : KotlinQuickFixAction<KtV
                 .map { resolvedCall.getArgumentMapping(it) }
                 .filterIsInstance<ArgumentMatch>()
                 .filter { argumentMatch -> argumentType == null || argumentType.isError || !argumentMatch.isError() }
-                .map { it.valueParameter }
+                .map(ArgumentMatch::valueParameter)
                 .toSet()
 
         return resolvedCall.resultingDescriptor.valueParameters

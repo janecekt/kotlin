@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.idea.intentions
 
 import com.intellij.openapi.editor.Editor
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.imports.canBeReferencedViaImport
 import org.jetbrains.kotlin.idea.imports.importableFqName
@@ -80,7 +81,7 @@ class ImportMemberIntention : SelfTargetingOffsetIndependentIntention<KtNameRefe
 
         val targets = nameExpression.mainReference.resolveToDescriptors(bindingContext)
         if (targets.isEmpty()) return null
-        if (!targets.all { it.canBeReferencedViaImport() }) return null
-        return targets.map { it.importableFqName }.singleOrNull()
+        if (!targets.all(DeclarationDescriptor::canBeReferencedViaImport)) return null
+        return targets.map(DeclarationDescriptor::importableFqName).singleOrNull()
     }
 }

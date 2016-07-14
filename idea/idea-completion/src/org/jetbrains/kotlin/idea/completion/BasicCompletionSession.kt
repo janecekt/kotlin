@@ -355,7 +355,7 @@ class BasicCompletionSession(
                 // if "this" is parsed correctly in the current context - insert it and all this@xxx items
                     "this" -> {
                         if (expression != null) {
-                            collector.addElements(thisExpressionItems(bindingContext, expression, prefix, resolutionFacade).map { it.createLookupElement() })
+                            collector.addElements(thisExpressionItems(bindingContext, expression, prefix, resolutionFacade).map(ThisItemLookupObject::createLookupElement))
                         }
                         else {
                             // for completion in secondary constructor delegation call

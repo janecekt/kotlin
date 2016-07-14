@@ -177,7 +177,7 @@ abstract class CompletionSession(
 
     private fun isVisibleDescriptor(descriptor: DeclarationDescriptor, completeNonAccessible: Boolean): Boolean {
         if (!configuration.completeJavaClassesNotToBeUsed && descriptor is ClassDescriptor) {
-            if (descriptor.importableFqName?.let { isJavaClassNotToBeUsedInKotlin(it) } == true) return false
+            if (descriptor.importableFqName?.let(::isJavaClassNotToBeUsedInKotlin) == true) return false
         }
 
         if (descriptor is TypeParameterDescriptor && !isTypeParameterVisible(descriptor)) return false
@@ -285,7 +285,7 @@ abstract class CompletionSession(
 
         if (context == null) {
             context = expectedInfos
-                    .mapNotNull { it.expectedName }
+                    .mapNotNull(ExpectedInfo::expectedName)
                     .distinct()
                     .singleOrNull()
                     ?.let { "expectedName=$it" }
@@ -442,7 +442,7 @@ abstract class CompletionSession(
                 predictableSmartCastsOnly = true /* we don't include smart cast receiver types for "unpredictable" receiver value to mark members grayed */)
 
         if (callTypeAndReceiver is CallTypeAndReceiver.SAFE || isDebuggerContext) {
-            receiverTypes = receiverTypes?.map { it.makeNotNullable() }
+            receiverTypes = receiverTypes?.map(KotlinType::makeNotNullable)
         }
 
         return callTypeAndReceiver to receiverTypes

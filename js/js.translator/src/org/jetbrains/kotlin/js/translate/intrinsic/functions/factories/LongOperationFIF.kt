@@ -88,9 +88,9 @@ object LongOperationFIF : FunctionIntrinsicFactory {
            LONG_EQUALS_ANY.apply(descriptor) || LONG_BINARY_OPERATION_LONG.apply(descriptor) || LONG_BIT_SHIFTS.apply(descriptor) ->
                longBinaryIntrinsics[operationName]
            INTEGER_BINARY_OPERATION_LONG.apply(descriptor) ->
-               wrapIntrinsicIfPresent(longBinaryIntrinsics[operationName], { longFromInt(it) }, ID())
+               wrapIntrinsicIfPresent(longBinaryIntrinsics[operationName], ::longFromInt, ID())
            LONG_BINARY_OPERATION_INTEGER.apply(descriptor) ->
-               wrapIntrinsicIfPresent(longBinaryIntrinsics[operationName], ID(), { longFromInt(it) })
+               wrapIntrinsicIfPresent(longBinaryIntrinsics[operationName], ID(), ::longFromInt)
            CHAR_BINARY_OPERATION_LONG.apply(descriptor) ->
                wrapIntrinsicIfPresent(longBinaryIntrinsics[operationName], { longFromInt(charToInt(it)) }, ID())
            LONG_BINARY_OPERATION_CHAR.apply(descriptor) ->

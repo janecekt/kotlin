@@ -58,7 +58,7 @@ class AddVarianceModifierInspection : AbstractKotlinInspection() {
                     }
                     if (variances.size == 1) {
                         val suggested = variances.first()
-                        val fixes = variances.map { AddVarianceFix(it) }
+                        val fixes = variances.map(::AddVarianceFix)
                         holder.registerProblem(
                                 typeParameter,
                                 "Type parameter can have $suggested variance",

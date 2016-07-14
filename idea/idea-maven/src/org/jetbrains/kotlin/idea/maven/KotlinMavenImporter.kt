@@ -100,7 +100,7 @@ class KotlinMavenImporter : MavenImporter(KotlinPluginGroupId, KotlinPluginArtif
     private fun contributeSourceDirectories(mavenProject: MavenProject, module: Module, rootModel: MavenRootModelAdapter) {
         val directories = collectSourceDirectories(mavenProject)
 
-        val toBeAdded = directories.map { it.second }.toSet()
+        val toBeAdded = directories.map(Pair<SourceType, String>::second).toSet()
         val state = module.kotlinImporterComponent
 
         for ((type, dir) in directories) {
