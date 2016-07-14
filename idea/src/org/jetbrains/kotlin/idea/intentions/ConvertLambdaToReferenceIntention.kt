@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingContext.REFERENCE_TARGET
+import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.isDynamic
 import org.jetbrains.kotlin.types.isFlexible
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
@@ -47,6 +48,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
         }
         val calleeDescriptor = context[REFERENCE_TARGET, calleeReferenceExpression] as? CallableMemberDescriptor ?: return false
         if (calleeDescriptor.typeParameters.isNotEmpty()) return false
+        if (calleeDescriptor is SyntheticJavaPropertyDescriptor) return false
         val descriptorHasReceiver = with (calleeDescriptor) { dispatchReceiverParameter != null || extensionReceiverParameter != null }
         val callHasReceiver = explicitReceiver != null
         if (descriptorHasReceiver != callHasReceiver) return false

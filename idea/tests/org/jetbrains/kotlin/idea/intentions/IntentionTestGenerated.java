@@ -3823,6 +3823,12 @@ public class IntentionTestGenerated extends AbstractIntentionTest {
             doTest(fileName);
         }
 
+        @TestMetadata("syntheticProperty.kt")
+        public void testSyntheticProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/syntheticProperty.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("threeParameters.kt")
         public void testThreeParameters() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/intentions/convertLambdaToReference/threeParameters.kt");
