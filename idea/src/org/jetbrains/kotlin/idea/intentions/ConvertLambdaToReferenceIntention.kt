@@ -29,7 +29,6 @@ import org.jetbrains.kotlin.resolve.BindingContext.REFERENCE_TARGET
 import org.jetbrains.kotlin.resolve.descriptorUtil.hasDefaultValue
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.isDynamic
-import org.jetbrains.kotlin.types.isFlexible
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 
 class ConvertLambdaToReferenceInspection : IntentionBasedInspection<KtLambdaExpression>(ConvertLambdaToReferenceIntention())
@@ -68,8 +67,8 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             if (explicitReceiver !is KtNameReferenceExpression) return false
             val callReceiverDescriptor = context[REFERENCE_TARGET, explicitReceiver] as? ParameterDescriptor ?: return false
             val receiverType = callReceiverDescriptor.type
-            if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
-                !receiverType.constructor.isDenotable || receiverType.isFunctionType) return false
+            if (receiverType.isTypeParameter() || receiverType.isError || receiverType.isDynamic() ||
+                receiverType.isFlexibleRecursive() || !receiverType.constructor.isDenotable || receiverType.isFunctionType) return false
             val receiverDeclarationDescriptor = receiverType.constructor.declarationDescriptor
             if (receiverDeclarationDescriptor is ClassDescriptor) {
                 if (receiverDeclarationDescriptor.kind == ClassKind.OBJECT) return false
