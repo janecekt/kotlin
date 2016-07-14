@@ -151,7 +151,7 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             }
             else {
                 factory.createCallArguments(
-                        arguments.joinToString(separator = ", ", prefix = "(") +
+                        arguments.joinToString(separator = ", ", prefix = "(") { it.text } +
                         ", $referenceName)"
                 )
             }
