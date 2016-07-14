@@ -17,9 +17,7 @@
 package org.jetbrains.kotlin.idea.intentions
 
 import com.intellij.openapi.editor.Editor
-import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.ParameterDescriptor
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.inspections.IntentionBasedInspection
 import org.jetbrains.kotlin.psi.*
@@ -65,6 +63,8 @@ class ConvertLambdaToReferenceIntention : SelfTargetingOffsetIndependentIntentio
             val receiverType = callReceiverDescriptor.type
             if (receiverType.isTypeParameter() || receiverType.isFlexible() || receiverType.isError || receiverType.isDynamic() ||
                 !receiverType.constructor.isDenotable) return false
+            val receiverDeclarationDescriptor = receiverType.constructor.declarationDescriptor
+            if (receiverDeclarationDescriptor is ClassDescriptor && receiverDeclarationDescriptor.kind == ClassKind.OBJECT) return false
 
             val parameterName = if (hasSpecification) lambdaExpression.valueParameters[0].name else "it"
             if (explicitReceiver.getReferencedName() != parameterName) return false
